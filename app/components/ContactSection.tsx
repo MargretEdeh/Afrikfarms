@@ -35,7 +35,7 @@ export default function ContactSection() {
             Contact <span className="text-[#205E0E]">Us</span>
           </h2>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Questions about investing, partnerships, or farmer onboarding? Send us a message and we'll reply within 48
+            Questions about investing, partnerships, or farmer onboarding? Send us a message and we&apos;ll reply within 48
             hours.
           </p>
         </motion.div>

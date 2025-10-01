@@ -46,9 +46,9 @@ export default function AboutSection() {
                 returns but ownership of real harvests.
               </p>
               <p>
-                Agriculture employs over 60% of Africa's population yet remains underfunded, fragmented, and vulnerable
+                Agriculture employs over 60% of Africa&apos;s population yet remains underfunded, fragmented, and vulnerable
                 to inefficiencies. AfrikFarm solves these challenges by directly connecting smallholder farmers with
-                individuals, corporations, and diaspora investors who are eager to participate in Africa's agricultural
+                individuals, corporations, and diaspora investors who are eager to participate in Africa&apos;s agricultural
                 transformation.
               </p>
               <p>

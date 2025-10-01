@@ -74,7 +74,7 @@ export default function TestimonialsSection() {
                 ))}
               </div>
 
-              <p className="text-gray-700 leading-relaxed mb-6 italic">"{testimonial.quote}"</p>
+              <p className="text-gray-700 leading-relaxed mb-6 italic">&quot;{testimonial.quote}&quot;</p>
 
               <div className="flex items-center gap-4 pt-6 border-t border-gray-100">
                 <img
@@ -100,7 +100,7 @@ export default function TestimonialsSection() {
         >
           <h3 className="text-2xl md:text-3xl font-bold mb-4">Join 7,500+ Happy Investors & Farmers</h3>
           <p className="text-white/90 max-w-2xl mx-auto mb-8">
-            Be part of Africa's agricultural transformation. Start investing or register your farm today.
+            Be part of Africa&apos;s agricultural transformation. Start investing or register your farm today.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <motion.a
