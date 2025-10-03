@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 "use client"
 
 import { useState } from "react"
@@ -75,7 +76,7 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     "Yobe",
     "Zamfara",
   ]
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (field: keyof FarmerRegistrationData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     setError(null)
@@ -412,7 +413,7 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                   </div>
                 )}
               </div>
-              <p className="text-xs text-gray-500">We'll validate your identity with NIMC database</p>
+              <p className="text-xs text-gray-500">We&apos;ll validate your identity with NIMC database</p>
             </div>
 
             {ninVerified && (

@@ -59,7 +59,7 @@ export default function LoginPage() {
             className="text-4xl flex gap-5  lg:text-5xl font-bold text-primary-foreground mb-6 leading-tight text-balance"
           >
          <Image src="/afrikfarms.png" alt="AfrikFarm Logo" width={100} height={100} />
-            Cultivating Africa's Agricultural Future
+            Cultivating Africa&apos;s Agricultural Future
           </motion.h1>
 
           <motion.p
@@ -284,7 +284,7 @@ export default function LoginPage() {
             className="mt-8 text-center"
           >
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <button className="text-primary hover:text-primary/80 font-medium transition-colors">
                 Contact Support
               </button>

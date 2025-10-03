@@ -69,7 +69,7 @@ export default function Dashboard({ stats }: DashboardProps) {
     { month: "May", revenue: 55000, target: 52000 },
     { month: "Jun", revenue: 67000, target: 60000 },
   ]
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180)
@@ -88,12 +88,13 @@ export default function Dashboard({ stats }: DashboardProps) {
       </text>
     )
   }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
           <p className="text-sm font-semibold text-foreground">{payload[0].payload.name || payload[0].payload.month}</p>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm text-muted-foreground">
               {entry.name}: <span className="font-bold text-foreground">{entry.value.toLocaleString()}</span>

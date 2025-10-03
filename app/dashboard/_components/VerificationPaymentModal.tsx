@@ -107,7 +107,7 @@ export default function VerificationPaymentModal({
             </div>
 
             <div className="space-y-2 rounded-lg bg-blue-50 p-4 text-sm text-blue-900">
-              <p className="font-medium">What you'll get after verification:</p>
+              <p className="font-medium">What you&apos;ll get after verification:</p>
               <ul className="ml-4 list-disc space-y-1">
                 <li>Access to loan applications</li>
                 <li>Farm management tools with GPS tracking</li>

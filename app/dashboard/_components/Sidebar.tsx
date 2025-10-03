@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import Link from "next/link"
 import { LayoutDashboard, Users, Tractor, FileText, DollarSign, CheckCircle2, BarChart3, LogOut } from "lucide-react"
 
 const menuItems = [
@@ -34,10 +35,10 @@ export default function Sidebar({ onLogout }: { onLogout: () => void }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <a href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-3 group">
                           <Image src="/afrikfarms.png" alt="AfrikFarm Logo" width={100} height={100} />
                         
-                      </a>
+                      </Link>
             <div>
               {/* <h1 className="text-lg font-bold text-sidebar-foreground">AfrikFarm</h1> */}
               <p className="text-xs text-muted-foreground">LGA Portal</p>

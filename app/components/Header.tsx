@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Link, Menu, X } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Header() {
@@ -35,10 +35,10 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <a href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group">
               <Image src="/afrikfarms.png" alt="AfrikFarm Logo" width={100} height={100} />
             
-          </a>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-6 text-sm">
             {navLinks.map((link) => (
