@@ -35,8 +35,8 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <a href="#home" className="flex items-center gap-3 group">
-              <Image src="/afrikfarm.png" alt="AfrikFarm Logo" width={100} height={100} />
+          <a href="/" className="flex items-center gap-3 group">
+              <Image src="/afrikfarms.png" alt="AfrikFarm Logo" width={100} height={100} />
             
           </a>
 
@@ -55,7 +55,7 @@ export default function Header() {
 
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="#login"
+              href="/login"
               className="px-4 py-2 bg-[#205E0E] text-white rounded-lg hover:bg-[#1a4c0b] transition-colors text-sm font-medium"
             >
               Login
@@ -97,7 +97,7 @@ export default function Header() {
             ))}
             <div className="pt-4 space-y-2">
               <a
-                href="#login"
+                href="/login"
                 className="block text-center px-4 py-2 bg-[#205E0E] text-white rounded-lg"
               >
                 Login
