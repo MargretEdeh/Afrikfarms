@@ -56,8 +56,11 @@ export default function ContactSection() {
                   </div>
                   <div>
                     <div className="font-medium mb-1">Email</div>
-                    <a href="mailto:hello@afrikfarm.org" className="text-white/80 hover:text-[#FFCD00] transition-colors">
-                      hello@afrikfarm.org
+                    <a href="mailto:info@Afrik Farm.com" className="text-white/80 hover:text-[#FFCD00] transition-colors">
+                    info@Afrik Farm.com
+                    </a>                    <a href="mailto:Afrik Farm.uk@yahoo.com" className="text-white/80 hover:text-[#FFCD00] transition-colors">
+
+                    Afrik Farm.uk@yahoo.com
                     </a>
                   </div>
                 </div>
@@ -69,7 +72,7 @@ export default function ContactSection() {
                   <div>
                     <div className="font-medium mb-1">Phone</div>
                     <a href="tel:+2348012345678" className="text-white/80 hover:text-[#FFCD00] transition-colors">
-                      +234 801 234 5678
+                     ​+234 (0) 904 452 4590
                     </a>
                   </div>
                 </div>
@@ -81,9 +84,9 @@ export default function ContactSection() {
                   <div>
                     <div className="font-medium mb-1">Office</div>
                     <div className="text-white/80">
-                      123 Agriculture Hub,
+                     ​Flat 7, Pioneer Wharf 6, Medway Street, 
                       <br />
-                      Victoria Island, Lagos, Nigeria
+                     London, United Kingdom
                     </div>
                   </div>
                 </div>

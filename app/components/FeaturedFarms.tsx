@@ -7,68 +7,69 @@ export default function FeaturedFarms() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
-  const farms = [
-    {
-      crop: 'Maize',
-      location: 'Kano State',
-      image: 'https://images.pexels.com/photos/2252618/pexels-photo-2252618.jpeg?auto=compress&cs=tinysrgb&w=800',
-      hectares: 12,
-      needed: '₦450,000',
-      roi: '18%',
-      harvest: 'Oct 2026',
-      funded: 65,
-    },
-    {
-      crop: 'Cassava',
-      location: 'Ogun State',
-      image: 'https://images.pexels.com/photos/4505171/pexels-photo-4505171.jpeg?auto=compress&cs=tinysrgb&w=800',
-      hectares: 8,
-      needed: '₦320,000',
-      roi: '14%',
-      harvest: 'Jan 2026',
-      funded: 80,
-    },
-    {
-      crop: 'Rice',
-      location: 'Benue State',
-      image: 'https://images.pexels.com/photos/2889440/pexels-photo-2889440.jpeg?auto=compress&cs=tinysrgb&w=800',
-      hectares: 20,
-      needed: '₦980,000',
-      roi: '20%',
-      harvest: 'Mar 2026',
-      funded: 45,
-    },
-    {
-      crop: 'Tomatoes',
-      location: 'Kaduna State',
-      image: 'https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=800',
-      hectares: 5,
-      needed: '₦280,000',
-      roi: '16%',
-      harvest: 'Dec 2025',
-      funded: 90,
-    },
-    {
-      crop: 'Soybeans',
-      location: 'Niger State',
-      image: 'https://images.pexels.com/photos/4022092/pexels-photo-4022092.jpeg?auto=compress&cs=tinysrgb&w=800',
-      hectares: 15,
-      needed: '₦520,000',
-      roi: '17%',
-      harvest: 'Feb 2026',
-      funded: 55,
-    },
-    {
-      crop: 'Yam',
-      location: 'Enugu State',
-      image: 'https://images.pexels.com/photos/2255925/pexels-photo-2255925.jpeg?auto=compress&cs=tinysrgb&w=800',
-      hectares: 10,
-      needed: '₦410,000',
-      roi: '15%',
-      harvest: 'Apr 2026',
-      funded: 70,
-    },
-  ];
+const farms = [
+  {
+    crop: 'Maize',
+    location: 'Kano State',
+    image: 'https://images.pexels.com/photos/96715/pexels-photo-96715.jpeg?auto=compress&cs=tinysrgb&w=800', // Corn field during daytime
+    hectares: 12,
+    needed: '₦450,000',
+    roi: '18%',
+    harvest: 'Oct 2026',
+    funded: 65,
+  },
+  {
+  crop: 'Cassava',
+  location: 'Ogun State',
+  image: 'https://cara.org.ng/wp-content/uploads/2024/07/Featured-image-of-cassava-tuber-with-stem.jpg',
+  hectares: 8,
+  needed: '₦320,000',
+  roi: '14%',
+  harvest: 'Jan 2026',
+  funded: 80,
+}
+,
+  {
+    crop: 'Rice',
+    location: 'Benue State',
+    image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLMiKGYEbFwyiyk4FCItjXyzIH48ez0UfwmEelzEfn2OIWBTdveSgBdahujGEHpWb0WQnV1-KizsUw6oJClnxU61YzmPfhAbNTGzEibOfXeg",
+    hectares: 20,
+    needed: '₦980,000',
+    roi: '20%',
+    harvest: 'Mar 2026',
+    funded: 45,
+  },
+  {
+    crop: 'Tomatoes',
+    location: 'Kaduna State',
+    image: 'https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=800', // Tomatoes on vine
+    hectares: 5,
+    needed: '₦280,000',
+    roi: '16%',
+    harvest: 'Dec 2025',
+    funded: 90,
+  },
+  {
+    crop: 'Soybeans',
+    location: 'Niger State',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAkTXEXooDLXb6-WkkzH3v1C5o_6-Jvazv6Q&s',
+    hectares: 15,
+    needed: '₦520,000',
+    roi: '17%',
+    harvest: 'Feb 2026',
+    funded: 55,
+  },
+  {
+    crop: 'Yam',
+    location: 'Enugu State',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkzxh2IjSAkis91ypBsMAJm_ofbyqtYIkUnA&s',
+     hectares: 10,
+    needed: '₦410,000',
+    roi: '15%',
+    harvest: 'Apr 2026',
+    funded: 70,
+  },
+];
 
   return (
     <section id="featured" className="py-20 bg-white" ref={ref}>

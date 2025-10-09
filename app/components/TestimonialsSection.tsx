@@ -1,16 +1,18 @@
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Quote, Star } from 'lucide-react';
 
 export default function TestimonialsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
+  const controls = useAnimation();
+
   const testimonials = [
     {
       quote:
-        "Investing with AfrikFarm was simple and rewarding. I saw real-time updates and got my returns on time. The transparency is unmatched.",
+        "Investing with Afrik Farm was simple and rewarding. I saw real-time updates and got my returns on time. The transparency is unmatched.",
       author: 'Chinedu Okafor',
       role: 'Investor',
       location: 'Lagos, Nigeria',
@@ -28,17 +30,59 @@ export default function TestimonialsSection() {
     },
     {
       quote:
-        "Partnering with AfrikFarm helped us expand our agricultural portfolio sustainably while creating real impact in African communities.",
+        "Partnering with Afrik Farm helped us expand our agricultural portfolio sustainably while creating real impact in African communities.",
       author: 'Global AgriVentures',
       role: 'Corporate Partner',
       location: 'International',
       image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
       rating: 5,
     },
+    {
+      quote:
+        "The mobile app makes it easy to track my investments anywhere. I've already reinvested my profits into more farms.",
+      author: 'Kwame Mensah',
+      role: 'Investor',
+      location: 'Accra, Ghana',
+      image: 'https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=400',
+      rating: 5,
+    },
+    {
+      quote:
+        "Afrik Farm provided me with quality seeds and fertilizers. My cassava harvest exceeded expectations this season.",
+      author: 'Fatima Musa',
+      role: 'Farmer',
+      location: 'Kaduna, Nigeria',
+      image: 'https://images.pexels.com/photos/8422148/pexels-photo-8422148.jpeg?auto=compress&cs=tinysrgb&w=400',
+      rating: 5,
+    },
+    {
+      quote:
+        "Finally, a platform that connects us directly with investors. No middlemen, just fair prices and timely payments.",
+      author: 'John Kamau',
+      role: 'Farmer',
+      location: 'Nairobi, Kenya',
+      image: 'https://images.pexels.com/photos/2406949/pexels-photo-2406949.jpeg?auto=compress&cs=tinysrgb&w=400',
+      rating: 5,
+    },
   ];
 
+  const duplicatedTestimonials = [...testimonials, ...testimonials];
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start({
+        x: ['0%', '-50%'],
+        transition: {
+          ease: 'linear',
+          duration: 20, 
+          repeat: Infinity,
+        },
+      });
+    }
+  }, [isInView, controls]);
+
   return (
-    <section id="testimonials" className="py-20 bg-gradient-to-b from-gray-50 to-white" ref={ref}>
+    <section id="testimonials" className="py-20 bg-gradient-to-b from-gray-50 to-white overflow-hidden" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -54,42 +98,57 @@ export default function TestimonialsSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
-              whileHover={{ y: -10 }}
-              className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative"
-            >
-              <div className="absolute top-6 right-6 text-[#FFCD00]">
-                <Quote size={40} className="opacity-20" />
-              </div>
-
-              <div className="flex gap-1 mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} size={16} className="fill-[#FFCD00] text-[#FFCD00]" />
-                ))}
-              </div>
-
-              <p className="text-gray-700 leading-relaxed mb-6 italic">&quot;{testimonial.quote}&quot;</p>
-
-              <div className="flex items-center gap-4 pt-6 border-t border-gray-100">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.author}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <div className="font-semibold text-gray-900">{testimonial.author}</div>
-                  <div className="text-sm text-gray-600">{testimonial.role}</div>
-                  <div className="text-xs text-gray-500">{testimonial.location}</div>
+        {/* Infinite Scroll Container */}
+        <div className="relative overflow-hidden">
+          <motion.div
+            className="flex gap-8 w-max"
+            animate={controls}
+            onHoverStart={() => controls.stop()}   // Pause when hovered
+            onHoverEnd={() =>
+              controls.start({
+                x: ['0%', '-50%'],
+                transition: { ease: 'linear', duration: 60, repeat: Infinity },
+              })
+            } // Resume when hover ends
+          >
+            {duplicatedTestimonials.map((testimonial, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 50 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: (idx % testimonials.length) * 0.1 }}
+                whileHover={{ y: -10, transition: { duration: 0.2 } }}
+                className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative flex-shrink-0 w-[380px]"
+              >
+                <div className="absolute top-6 right-6 text-[#FFCD00]">
+                  <Quote size={40} className="opacity-20" />
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                <div className="flex gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} size={16} className="fill-[#FFCD00] text-[#FFCD00]" />
+                  ))}
+                </div>
+
+                <p className="text-gray-700 leading-relaxed mb-6 italic">
+                  &quot;{testimonial.quote}&quot;
+                </p>
+
+                <div className="flex items-center gap-4 pt-6 border-t border-gray-100">
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.author}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className="font-semibold text-gray-900">{testimonial.author}</div>
+                    <div className="text-sm text-gray-600">{testimonial.role}</div>
+                    <div className="text-xs text-gray-500">{testimonial.location}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
 
         <motion.div
@@ -98,7 +157,9 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-16 bg-gradient-to-r from-[#205E0E] to-[#1a4c0b] rounded-2xl p-8 md:p-12 text-center text-white"
         >
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">Join 7,500+ Happy Investors & Farmers</h3>
+          <h3 className="text-2xl md:text-3xl font-bold mb-4">
+            Join 7,500+ Happy Investors & Farmers
+          </h3>
           <p className="text-white/90 max-w-2xl mx-auto mb-8">
             Be part of Africa&apos;s agricultural transformation. Start investing or register your farm today.
           </p>

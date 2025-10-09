@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail,  } from 'lucide-react';
 import { useState } from 'react';
 import Image from 'next/image';
 
@@ -44,12 +44,27 @@ export default function Footer() {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
-  ];
+  {
+    icon: Facebook,
+    href: 'https://facebook.com/Afrik Farmer',
+    label: 'Facebook',
+  },
+  {
+    icon: Twitter, // represents "X"
+    href: 'https://x.com/Afrik Farmer',
+    label: 'X (Twitter)',
+  },
+  {
+    icon: Instagram,
+    href: 'https://instagram.com/Afrik Farmer',
+    label: 'Instagram',
+  },
+  {
+    icon: Linkedin,
+    href: 'https://www.linkedin.com/company/Afrik Farmer',
+    label: 'LinkedIn',
+  },
+];
 
   return (
     <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-300">
@@ -57,10 +72,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <Image src="/afrikfarm.png" alt="AfrikFarm Logo" width={100} height={100} />
+              <Image src="/AfrikFarm.png" alt="Afrik Farm Logo" width={100} height={100} />
               
               <div>
-                <div className="text-xl font-bold text-white">AfrikFarm</div>
+                <div className="text-xl font-bold text-white">Afrik Farm</div>
                 <div className="text-xs text-gray-400">Where Capital Meets Cultivation</div>
               </div>
             </div>
@@ -168,7 +183,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-          <div>© 2025 AfrikFarm — All rights reserved</div>
+          <div>© 2025 Afrik Farm — All rights reserved</div>
           <div className="flex gap-6">
             <a href="#" className="hover:text-[#FFCD00] transition-colors">
               Privacy

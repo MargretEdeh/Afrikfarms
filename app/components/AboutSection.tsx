@@ -36,18 +36,18 @@ export default function AboutSection() {
             className="lg:col-span-2"
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              About <span className="text-[#205E0E]">AfrikFarm</span>
+              About <span className="text-[#205E0E]">Afrik Farm</span>
             </h2>
             <div className="mt-6 space-y-4 text-gray-700 leading-relaxed">
               <p>
-                AfrikFarm is a digital agriculture investment platform that bridges the gap between farmers across
-                Africa and investors worldwide. By leveraging technology, AfrikFarm creates a transparent, traceable,
+                Afrik Farm is a digital agriculture investment platform that bridges the gap between farmers across
+                Africa and investors worldwide. By leveraging technology, Afrik Farm creates a transparent, traceable,
                 and sustainable ecosystem where capital meets cultivation, and investors receive not just financial
                 returns but ownership of real harvests.
               </p>
               <p>
                 Agriculture employs over 60% of Africa&apos;s population yet remains underfunded, fragmented, and vulnerable
-                to inefficiencies. AfrikFarm solves these challenges by directly connecting smallholder farmers with
+                to inefficiencies. Afrik Farm solves these challenges by directly connecting smallholder farmers with
                 individuals, corporations, and diaspora investors who are eager to participate in Africa&apos;s agricultural
                 transformation.
               </p>

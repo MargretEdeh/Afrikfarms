@@ -36,11 +36,11 @@ export default function Sidebar({ onLogout }: { onLogout: () => void }) {
             whileTap={{ scale: 0.98 }}
           >
             <Link href="/" className="flex items-center gap-3 group">
-                          <Image src="/afrikfarms.png" alt="AfrikFarm Logo" width={100} height={100} />
+                          <Image src="/AfrikFarms.png" alt="Afrik Farm Logo" width={100} height={100} />
                         
                       </Link>
             <div>
-              {/* <h1 className="text-lg font-bold text-sidebar-foreground">AfrikFarm</h1> */}
+              {/* <h1 className="text-lg font-bold text-sidebar-foreground">Afrik Farm</h1> */}
               <p className="text-xs text-muted-foreground">LGA Portal</p>
             </div>
           </motion.a>

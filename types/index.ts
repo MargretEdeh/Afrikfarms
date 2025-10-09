@@ -33,6 +33,9 @@ export interface FarmerRegistrationData {
   address: string
   state: string
   lga: string
+  bankName?: string
+  accountNumber?: string
+  accountName?: string
 }
 
 

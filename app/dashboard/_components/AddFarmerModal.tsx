@@ -35,7 +35,34 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     address: "",
     state: "",
     lga: "",
+    bankName: "",
+    accountNumber: "",
+    accountName: "",
   })
+
+  const nigerianBanks = [
+    "Access Bank",
+    "Zenith Bank",
+    "GTBank (Guaranty Trust Bank)",
+    "First Bank of Nigeria",
+    "UBA (United Bank for Africa)",
+    "Fidelity Bank",
+    "Union Bank",
+    "Ecobank Nigeria",
+    "Sterling Bank",
+    "Stanbic IBTC Bank",
+    "Standard Chartered Bank",
+    "Keystone Bank",
+    "Polaris Bank",
+    "Wema Bank",
+    "Unity Bank",
+    "Providus Bank",
+    "Jaiz Bank",
+    "SunTrust Bank",
+    "Parallex Bank",
+    "Globus Bank",
+    "Premium Trust Bank",
+  ]
 
   const nigerianStates = [
     "Abia",
@@ -192,13 +219,18 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
   }
 
   const handleFinalSubmit = async () => {
-    if (!formData.nin || !formData.address || !formData.state || !formData.lga) {
+    if (!formData.nin || !formData.address || !formData.state || !formData.lga || !formData.bankName || !formData.accountNumber || !formData.accountName) {
       setError("Please fill in all required fields")
       return
     }
 
     if (!ninVerified) {
       setError("Please verify your NIN first")
+      return
+    }
+
+    if (formData.accountNumber.length !== 10) {
+      setError("Account number must be 10 digits")
       return
     }
 
@@ -231,6 +263,9 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
       address: "",
       state: "",
       lga: "",
+      bankName: "",
+      accountNumber: "",
+      accountName: "",
     })
     onClose()
   }
@@ -504,6 +539,57 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                     </label>
                   </div>
                 </div>
+
+                <div className="pt-4 border-t border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Bank Account Details</h3>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="bankName">
+                        Bank Name <span className="text-red-500">*</span>
+                      </Label>
+                      <select
+                        id="bankName"
+                        value={formData.bankName}
+                        onChange={(e) => handleInputChange("bankName", e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      >
+                        <option value="">Select Bank</option>
+                        {nigerianBanks.map((bank) => (
+                          <option key={bank} value={bank}>
+                            {bank}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="accountNumber">
+                        Account Number <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="accountNumber"
+                        placeholder="0123456789"
+                        maxLength={10}
+                        value={formData.accountNumber}
+                        onChange={(e) => handleInputChange("accountNumber", e.target.value.replace(/\D/g, ""))}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="accountName">
+                        Account Name <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="accountName"
+                        placeholder="Enter account name"
+                        value={formData.accountName}
+                        onChange={(e) => handleInputChange("accountName", e.target.value)}
+                      />
+                      <p className="text-xs text-gray-500">Must match the name on your bank account</p>
+                    </div>
+                  </div>
+                </div>
               </>
             )}
 
@@ -517,7 +603,7 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                 </Button>
                 <Button
                   onClick={handleFinalSubmit}
-                  disabled={loading || !ninVerified || !formData.address || !formData.state || !formData.lga}
+                  disabled={loading || !ninVerified || !formData.address || !formData.state || !formData.lga || !formData.bankName || !formData.accountNumber || !formData.accountName}
                   className="bg-primary hover:bg-emerald-700"
                 >
                   {loading ? (

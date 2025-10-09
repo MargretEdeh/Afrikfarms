@@ -13,11 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AfrikFarm | Digital Agriculture Investment Platform",
+  title: "Afrik Farm | Digital Agriculture Investment Platform",
   description:
-    "AfrikFarm bridges African farmers with global investors through transparent funding, agronomic support, and data-driven market access. Empowering 120k+ farmers to thrive.",
+    "Afrik Farm bridges African farmers with global investors through transparent funding, agronomic support, and data-driven market access. Empowering 120k+ farmers to thrive.",
   keywords: [
-    "AfrikFarm",
+    "Afrik Farm",
     "agriculture investment",
     "African farmers",
     "impact investing",
@@ -28,19 +28,19 @@ export const metadata: Metadata = {
     "diaspora investment",
     "rural development",
   ],
-  authors: [{ name: "AfrikFarm Team" }],
+  authors: [{ name: "Afrik Farm Team" }],
   openGraph: {
-    title: "AfrikFarm | Digital Agriculture Investment Platform",
+    title: "Afrik Farm | Digital Agriculture Investment Platform",
     description:
       "Transforming African agriculture by connecting farmers with investors worldwide. Transparent, sustainable, and impactful.",
     url: "https://afrikfarms.vercel.app/", 
-    siteName: "AfrikFarm",
+    siteName: "Afrik Farm",
     images: [
       {
         url: "/afrikfarm.png",
         width: 1200,
         height: 630,
-        alt: "AfrikFarm - Empowering African Farmers",
+        alt: "Afrik Farm - Empowering African Farmers",
       },
     ],
     locale: "en_US",
@@ -48,13 +48,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AfrikFarm | Digital Agriculture Investment Platform",
+    title: "Afrik Farm | Digital Agriculture Investment Platform",
     description:
-      "AfrikFarm empowers 120k+ African farmers with global funding, agronomy, and market access.",
+      "Afrik Farm empowers 120k+ African farmers with global funding, agronomy, and market access.",
     images: ["/og-image.jpg"],
-    creator: "@afrikfarm", 
+    creator: "@AfrikFarm", 
   },
-  metadataBase: new URL("https://afrikfarms.vercel.app"), 
+  metadataBase: new URL("https://AfrikFarms.vercel.app"), 
   themeColor: "#205E0E",
   icons: {
     icon: "/favicon.ico",
