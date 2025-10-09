@@ -82,7 +82,7 @@ export default function Dashboard({ stats }: DashboardProps) {
         fill="white"
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
-        className="font-bold text-sm"
+        className="font-bold text-[8px]"
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
@@ -191,7 +191,7 @@ export default function Dashboard({ stats }: DashboardProps) {
                   <Cell
                     key={`cell-${index}`}
                     fill={entry.color}
-                    className="hover:opacity-80 transition-opacity cursor-pointer"
+                    className="hover:opacity-80  transition-opacity cursor-pointer"
                   />
                 ))}
               </Pie>

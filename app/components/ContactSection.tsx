@@ -56,12 +56,15 @@ export default function ContactSection() {
                   </div>
                   <div>
                     <div className="font-medium mb-1">Email</div>
-                    <a href="mailto:info@Afrik Farm.com" className="text-white/80 hover:text-[#FFCD00] transition-colors">
-                    info@Afrik Farm.com
-                    </a>                    <a href="mailto:Afrik Farm.uk@yahoo.com" className="text-white/80 hover:text-[#FFCD00] transition-colors">
-
-                    Afrik Farm.uk@yahoo.com
+                    <div className='flex flex-col items-start'>
+                  <a href="mailto:info@Afrik Farm.com" className="text-white/80 hover:text-[#FFCD00] transition-colors">
+                    info@AfrikFarm.com
                     </a>
+                    <a href="mailto:Afrik Farm.uk@yahoo.com" className="text-white/80 hover:text-[#FFCD00] transition-colors">
+                    AfrikFarm.uk@yahoo.com
+                    </a>
+                    </div>
+                   
                   </div>
                 </div>
 
@@ -84,9 +87,7 @@ export default function ContactSection() {
                   <div>
                     <div className="font-medium mb-1">Office</div>
                     <div className="text-white/80">
-                     ​Flat 7, Pioneer Wharf 6, Medway Street, 
-                      <br />
-                     London, United Kingdom
+                     ​Flat 7, Pioneer Wharf 6, Medway Street,London, United Kingdom
                     </div>
                   </div>
                 </div>

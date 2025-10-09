@@ -16,7 +16,7 @@ export default function TestimonialsSection() {
       author: 'Chinedu Okafor',
       role: 'Investor',
       location: 'Lagos, Nigeria',
-      image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJWhniFas8JFWo0AwUyBkOUwH69aPrZzcq4A&s',
       rating: 5,
     },
     {
@@ -25,7 +25,7 @@ export default function TestimonialsSection() {
       author: 'Amina Abdullahi',
       role: 'Farmer',
       location: 'Kano, Nigeria',
-      image: 'https://images.pexels.com/photos/8422403/pexels-photo-8422403.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_lGgOpjKYMKL7VPjszwgckN3qRgrv2IVJHw&s',
       rating: 5,
     },
     {
@@ -34,7 +34,7 @@ export default function TestimonialsSection() {
       author: 'Global AgriVentures',
       role: 'Corporate Partner',
       location: 'International',
-      image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3NkBq3IgplwZ5jdpbIFKy7cj-9peO69SGXQ&s',
       rating: 5,
     },
     {
@@ -43,7 +43,7 @@ export default function TestimonialsSection() {
       author: 'Kwame Mensah',
       role: 'Investor',
       location: 'Accra, Ghana',
-      image: 'https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvcAwRhmH89etSpLz71QohJBBMaaPYoUbxfQ&s',
       rating: 5,
     },
     {
@@ -52,7 +52,7 @@ export default function TestimonialsSection() {
       author: 'Fatima Musa',
       role: 'Farmer',
       location: 'Kaduna, Nigeria',
-      image: 'https://images.pexels.com/photos/8422148/pexels-photo-8422148.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQN-TxwshTcg7OkurDyLnltgaxcApJ5p1-mnw&s',
       rating: 5,
     },
     {
@@ -61,7 +61,7 @@ export default function TestimonialsSection() {
       author: 'John Kamau',
       role: 'Farmer',
       location: 'Nairobi, Kenya',
-      image: 'https://images.pexels.com/photos/2406949/pexels-photo-2406949.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0vSKC4FB5G3BJrgvvgXUVTEXHg2BrZp_0xw&s',
       rating: 5,
     },
   ];
