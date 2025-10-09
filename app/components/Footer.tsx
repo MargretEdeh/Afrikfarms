@@ -72,7 +72,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <Image src="/AfrikFarm.png" alt="Afrik Farm Logo" width={100} height={100} />
+              <Image src="/afrikfarm.png" alt="Afrik Farm Logo" width={100} height={100} />
               
               <div>
                 <div className="text-xl font-bold text-white">Afrik Farm</div>

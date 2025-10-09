@@ -58,7 +58,7 @@ export default function LoginPage() {
             transition={{ delay: 0.5, duration: 0.6 }}
             className="text-4xl flex gap-5  lg:text-5xl font-bold text-primary-foreground mb-6 leading-tight text-balance"
           >
-         <Image src="/AfrikFarms.png" alt="Afrik Farm Logo" width={100} height={100} />
+         <Image src="/afrikfarms.png" alt="Afrik Farm Logo" width={100} height={100} />
             Cultivating Africa&apos;s Agricultural Future
           </motion.h1>
 

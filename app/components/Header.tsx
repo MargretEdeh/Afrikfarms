@@ -35,7 +35,7 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-              <Image src="/AfrikFarms.png" alt="Afrik Farm Logo" width={100} height={100} />
+              <Image src="/afrikfarms.png" alt="Afrik Farm Logo" width={100} height={100} />
             
 
           <nav className="hidden md:flex items-center gap-6 text-sm">
