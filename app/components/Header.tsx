@@ -35,10 +35,8 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center gap-3 group">
               <Image src="/AfrikFarms.png" alt="Afrik Farm Logo" width={100} height={100} />
             
-          </Link>
 
           <nav className="hidden md:flex items-center gap-6 text-sm">
             {navLinks.map((link) => (
