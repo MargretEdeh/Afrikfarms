@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 "use client"
 
-import { useState } from "react"
+import { useState , useEffect} from "react"
 import { Check, Loader2, Upload, AlertCircle } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import type { FarmerRegistrationData } from "@/types"
+import { LGAService } from "@/services/lga.service"
 
 interface AddFarmerModalProps {
   open: boolean
@@ -24,6 +25,7 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
   const [otpVerified, setOtpVerified] = useState(false)
   const [ninVerified, setNinVerified] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [banks, setBanks] = useState<Array<{id: number, name: string, code: string}>>([])
 
   const [formData, setFormData] = useState<Partial<FarmerRegistrationData>>({
     fullName: "",
@@ -39,30 +41,13 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     accountNumber: "",
     accountName: "",
   })
+    useEffect(() => {
+  if (open) {
+    fetchBanks()
+  }
+}, [open])
 
-  const nigerianBanks = [
-    "Access Bank",
-    "Zenith Bank",
-    "GTBank (Guaranty Trust Bank)",
-    "First Bank of Nigeria",
-    "UBA (United Bank for Africa)",
-    "Fidelity Bank",
-    "Union Bank",
-    "Ecobank Nigeria",
-    "Sterling Bank",
-    "Stanbic IBTC Bank",
-    "Standard Chartered Bank",
-    "Keystone Bank",
-    "Polaris Bank",
-    "Wema Bank",
-    "Unity Bank",
-    "Providus Bank",
-    "Jaiz Bank",
-    "SunTrust Bank",
-    "Parallex Bank",
-    "Globus Bank",
-    "Premium Trust Bank",
-  ]
+ 
 
   const nigerianStates = [
     "Abia",
@@ -103,7 +88,9 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     "Yobe",
     "Zamfara",
   ]
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (field: keyof FarmerRegistrationData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     setError(null)
@@ -119,18 +106,10 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     setError(null)
 
     try {
-      // Simulate OTP sending API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // TODO: Replace with actual API call
-      // await fetch('/api/send-otp', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ phone: formData.phone, email: formData.email })
-      // })
-
+      await LGAService.sendCode({ phone_number: formData.phone })
       setOtpSent(true)
-    } catch (err) {
-      setError("Failed to send OTP. Please try again.")
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to send OTP. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -146,22 +125,27 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     setError(null)
 
     try {
-      // Simulate OTP verification API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/verify-otp', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ phone: formData.phone, code: formData.otpCode })
-      // })
-
+      await LGAService.verifyCode({
+        phone_number: formData.phone!,
+        code: formData.otpCode,
+      })
       setOtpVerified(true)
-    } catch (err) {
-      setError("Invalid OTP. Please try again.")
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Invalid OTP. Please try again.")
     } finally {
       setLoading(false)
     }
   }
+
+
+const fetchBanks = async () => {
+  try {
+    const response = await LGAService.getBanks() 
+    setBanks(response?.data || [])
+  } catch (err) {
+    console.error('Failed to fetch banks:', err)
+  }
+} 
 
   const handleStep1Submit = () => {
     if (!formData.fullName || !formData.phone) {
@@ -193,59 +177,90 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     setError(null)
 
     try {
-      // Simulate NIN verification API call to NIMC
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // TODO: Replace with actual NIMC API call
-      // const response = await fetch('/api/verify-nin', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ nin: formData.nin, name: formData.fullName })
-      // })
-
+      const response = await LGAService.verifyNin({ nin: formData.nin })
       setNinVerified(true)
 
-      // Auto-fill data from NIN verification (simulated)
-      // In production, this would come from NIMC API response
-      handleInputChange("passportPhoto", "/placeholder-user.jpg")
-    } catch (err) {
-      setError("NIN verification failed. Please check the number and try again.")
+      // Auto-fill data from NIN verification if available
+      if (response?.data) {
+        // Update form data with any returned information
+        // This depends on what your API returns
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "NIN verification failed. Please check the number and try again.")
     } finally {
       setLoading(false)
     }
   }
 
-  const handleFileUpload = (field: "passportPhoto" | "proofOfAddress", file: File) => {
-    handleInputChange(field, file)
-  }
-
-  const handleFinalSubmit = async () => {
-    if (!formData.nin || !formData.address || !formData.state || !formData.lga || !formData.bankName || !formData.accountNumber || !formData.accountName) {
-      setError("Please fill in all required fields")
-      return
-    }
-
-    if (!ninVerified) {
-      setError("Please verify your NIN first")
-      return
-    }
-
-    if (formData.accountNumber.length !== 10) {
-      setError("Account number must be 10 digits")
-      return
-    }
-
+ const handleFileUpload = async (field: "passportPhoto" | "proofOfAddress", file: File) => {
     setLoading(true)
     setError(null)
 
     try {
-      await onSubmit(formData as FarmerRegistrationData)
-      handleClose()
-    } catch (err) {
-      setError("Failed to register farmer. Please try again.")
+      const formData = new FormData()
+      
+      if (field === "passportPhoto") {
+        formData.append("profile_image", file)
+        const response = await LGAService.uploadProfileImage(formData)
+        handleInputChange(field, response?.data?.url || response?.url)
+      } else if (field === "proofOfAddress") {
+        formData.append("proof_of_address", file)
+        const response = await LGAService.UploadProofOfAddress(formData)
+        handleInputChange(field, response?.data?.url || response?.url)
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message || `Failed to upload ${field === "passportPhoto" ? "photo" : "document"}. Please try again.`)
     } finally {
       setLoading(false)
     }
   }
+
+  const handleFinalSubmit = async () => {
+  if (!formData.nin || !formData.address || !formData.state || !formData.lga || !formData.bankName || !formData.accountNumber || !formData.accountName) {
+    setError("Please fill in all required fields")
+    return
+  }
+
+  if (!ninVerified) {
+    setError("Please verify your NIN first")
+    return
+  }
+
+  if (formData.accountNumber.length !== 10) {
+    setError("Account number must be 10 digits")
+    return
+  }
+
+  setLoading(true)
+  setError(null)
+
+  try {
+    const apiData = {
+      fullname: formData.fullName!,
+      email: formData.email || null,
+      phone_number: formData.phone!,
+      phone_verified: otpVerified,
+      nin: formData.nin,
+      nin_verified: ninVerified,
+      address: formData.address,
+      bankId: parseInt(formData.bankName!),
+      account_name: formData.accountName,
+      account_number: formData.accountNumber,
+      profile_image: formData.passportPhoto || "noimage.jpg",  
+      proof_of_address: formData.proofOfAddress || "noimage.jpg",  
+    }
+
+    console.log('Submitting farmer data:', apiData) 
+
+    await LGAService.createFarmer(apiData)
+    await onSubmit(formData as FarmerRegistrationData)
+    handleClose()
+  } catch (err: any) {
+    setError(err?.response?.data?.message || "Failed to register farmer. Please try again.")
+  } finally {
+    setLoading(false)
+  }
+}
 
   const handleClose = () => {
     setStep(1)
@@ -548,19 +563,19 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                       <Label htmlFor="bankName">
                         Bank Name <span className="text-red-500">*</span>
                       </Label>
-                      <select
-                        id="bankName"
-                        value={formData.bankName}
-                        onChange={(e) => handleInputChange("bankName", e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      >
-                        <option value="">Select Bank</option>
-                        {nigerianBanks.map((bank) => (
-                          <option key={bank} value={bank}>
-                            {bank}
-                          </option>
-                        ))}
-                      </select>
+                   <select
+  id="bankName"
+  value={formData.bankName}
+  onChange={(e) => handleInputChange("bankName", e.target.value)}
+  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+>
+  <option value="">Select Bank</option>
+  {banks.map((bank) => (
+    <option key={bank.id} value={bank.id.toString()}>
+      {bank.name}
+    </option>
+  ))}
+</select>
                     </div>
 
                     <div className="space-y-2">

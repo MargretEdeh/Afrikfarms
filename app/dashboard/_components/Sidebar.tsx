@@ -29,7 +29,7 @@ export default function Sidebar({ onLogout }: { onLogout: () => void }) {
         className="p-6 border-b border-sidebar-border"
       >
         <div className="flex items-center gap-3">
-          <motion.a
+          {/* <motion.a
             href="/"
             className="flex items-center gap-3 group"
             whileHover={{ scale: 1.02 }}
@@ -40,10 +40,9 @@ export default function Sidebar({ onLogout }: { onLogout: () => void }) {
                         
                       </Link>
             <div>
-              {/* <h1 className="text-lg font-bold text-sidebar-foreground">Afrik Farm</h1> */}
               <p className="text-xs text-muted-foreground">LGA Portal</p>
             </div>
-          </motion.a>
+          </motion.a> */}
         </div>
       </motion.div>
 

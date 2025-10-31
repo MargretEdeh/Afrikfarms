@@ -1,128 +1,97 @@
 "use client"
-import { useState } from "react"
-import Link from "next/link"
+
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Sprout, Users, Clock, TrendingUp, Search, CreditCard, CheckCircle2 } from "lucide-react"
+import {
+  Users,
+  Clock,
+  TrendingUp,
+  Search,
+  CreditCard,
+  CheckCircle2,
+  Loader2,
+  AlertCircle,
+} from "lucide-react"
 import PaymentModal from "../_components/PaymentModal"
+import { useLGA } from "@/context/LgaContext"
 
-// Type definitions matching your schema
-type FarmerStatus = 'active' | 'pending' | 'inactive' | 'suspended'
-type PaymentStatus = 'pending' | 'success' | 'failed'
+type PaymentStatus = "pending" | "success" | "failed"
 
-interface Farmer {
-  id: string
-  name: string
-  email?: string
-  paymentStatus?: PaymentStatus
-  phone: string
-  nin: string
+interface FarmerWithPayment {
+  id?: number
+  fullname: string
+  email?: string | null
+  phone_number: string
+  nin?: string
   address: string
-  state: string
-  lga: string
-  farmSize: string
-  registrationDate: string
-  status: FarmerStatus
-  photoUrl?: string
+  status?: string
+  has_paid?: boolean
+  payment_amount?: number
+  payment_reference?: string
+  createdAt?: string
+  paymentStatus?: PaymentStatus
   paymentAmount?: number
 }
 
-interface VerificationPayment {
-  amount: number
-  currency: string
-  paymentMethod: "paystack" | "opay"
-  reference: string
-  status: "pending" | "success" | "failed"
-}
-
-const initialFarmers: Farmer[] = [
-  {
-    id: "FM-2023-7890",
-    name: "Musa Abdullahi",
-    email: "musa.abdullahi@email.com",
-    phone: "0803 456 7890",
-    nin: "12345678901",
-    address: "Kubwa District, Bwari LGA",
-    state: "FCT",
-    lga: "Bwari",
-    farmSize: "2.5 hectares",
-    registrationDate: "2023-08-15",
-    status: "active",
-    paymentStatus: "success",
-    paymentAmount: 5000,
-  },
-  {
-    id: "FM-2023-7891",
-    name: "Aisha Bello",
-    email: "aisha.bello@email.com",
-    phone: "0802 123 4567",
-    nin: "98765432109",
-    address: "Bwari Central",
-    state: "FCT",
-    lga: "Bwari",
-    farmSize: "1.8 hectares",
-    registrationDate: "2023-07-22",
-    status: "active",
-    paymentStatus: "pending",
-  },
-  {
-    id: "FM-2023-7892",
-    name: "Yusuf Sani",
-    phone: "0805 789 0123",
-    nin: "11223344556",
-    address: "Ushafa Village",
-    state: "FCT",
-    lga: "Bwari",
-    farmSize: "3.2 hectares",
-    registrationDate: "2023-09-05",
-    status: "pending",
-    paymentStatus: "pending",
-  },
-  {
-    id: "FM-2023-7893",
-    name: "Fatima Ahmed",
-    email: "fatima.ahmed@email.com",
-    phone: "0807 654 3210",
-    nin: "66778899001",
-    address: "Dutse Alhaji",
-    state: "FCT",
-    lga: "Bwari",
-    farmSize: "1.5 hectares",
-    registrationDate: "2023-10-10",
-    status: "active",
-    paymentStatus: "success",
-    paymentAmount: 3500,
-  },
-  {
-    id: "FM-2023-7894",
-    name: "Ibrahim Usman",
-    email: "ibrahim.usman@email.com",
-    phone: "0809 876 5432",
-    nin: "55443322110",
-    address: "Kubwa Phase 2",
-    state: "FCT",
-    lga: "Bwari",
-    farmSize: "4.0 hectares",
-    registrationDate: "2023-11-12",
-    status: "active",
-    paymentStatus: "pending",
-  },
-]
-
 export default function AdminDashboard() {
-  const [farmers, setFarmers] = useState<Farmer[]>(initialFarmers)
+  const { farmers: contextFarmers, loading: contextLoading, error: contextError, fetchFarmers } = useLGA()
+  const [farmers, setFarmers] = useState<FarmerWithPayment[]>([])
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedFarmer, setSelectedFarmer] = useState<Farmer | null>(null)
+  const [selectedFarmer, setSelectedFarmer] = useState<FarmerWithPayment | null>(null)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handlePaymentSuccess = (payment: VerificationPayment) => {
+  // ✅ Fetch only once on mount — no infinite loop
+  useEffect(() => {
+    const loadFarmers = async () => {
+      try {
+        await fetchFarmers()
+      } catch (err: any) {
+        setError(err.message || "Failed to load farmers")
+      }
+    }
+    loadFarmers()
+  }, [fetchFarmers])
+
+  // ✅ FIXED: Transform farmers data properly
+  useEffect(() => {
+    console.log("Context farmers:", contextFarmers) // Debug log
+    
+    if (contextFarmers) {
+      // Handle if contextFarmers is the response object with data property
+      const farmersArray = Array.isArray(contextFarmers) 
+        ? contextFarmers 
+        : contextFarmers.data || []
+      
+      console.log("Farmers array:", farmersArray) // Debug log
+      
+      if (farmersArray.length > 0) {
+        const transformed = farmersArray.map((f: any) => ({
+          ...f,
+          paymentStatus: f.has_paid ? "success" : "pending",
+          paymentAmount: f.payment_amount || 0,
+        }))
+        setFarmers(transformed)
+      } else {
+        setFarmers([])
+      }
+    }
+  }, [contextFarmers])
+
+  const handlePaymentSuccess = (payment: any) => {
     if (selectedFarmer) {
       setFarmers((prev) =>
         prev.map((farmer) =>
           farmer.id === selectedFarmer.id
-            ? { ...farmer, paymentStatus: "success" as PaymentStatus, paymentAmount: payment.amount }
+            ? {
+                ...farmer,
+                paymentStatus: "success",
+                paymentAmount: payment.amount,
+                payment_reference: payment.reference,
+              }
             : farmer,
         ),
       )
@@ -131,16 +100,16 @@ export default function AdminDashboard() {
     setSelectedFarmer(null)
   }
 
-  const handlePayClick = (farmer: Farmer) => {
+  const handlePayClick = (farmer: FarmerWithPayment) => {
     setSelectedFarmer(farmer)
     setShowPaymentModal(true)
   }
 
   const filteredFarmers = farmers.filter(
     (farmer) =>
-      farmer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      farmer.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      farmer.phone.includes(searchQuery),
+      farmer.fullname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(farmer.id).includes(searchQuery) ||
+      farmer.phone_number.includes(searchQuery),
   )
 
   const totalFarmers = farmers.length
@@ -150,8 +119,8 @@ export default function AdminDashboard() {
     .filter((f) => f.paymentStatus === "success")
     .reduce((sum, f) => sum + (f.paymentAmount || 0), 0)
 
-  const getStatusColor = (status: FarmerStatus) => {
-    switch (status) {
+  const getStatusColor = (status: string | undefined) => {
+    switch (status?.toLowerCase()) {
       case "active":
         return "default"
       case "pending":
@@ -160,59 +129,61 @@ export default function AdminDashboard() {
         return "outline"
       case "suspended":
         return "destructive"
+      default:
+        return "secondary"
     }
+  }
+
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-background">
-     
-
       <div className="container mx-auto px-4 py-8">
-        {/* Stats Overview */}
+        {/* Dashboard Stats */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Farmers</CardTitle>
+            <CardHeader className="flex justify-between items-center">
+              <CardTitle>Total Farmers</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalFarmers}</div>
-              <p className="text-xs text-muted-foreground mt-1">Registered farmers</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Paid</CardTitle>
+            <CardHeader className="flex justify-between items-center">
+              <CardTitle>Paid</CardTitle>
               <CheckCircle2 className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{paidFarmers}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {totalFarmers > 0 ? Math.round((paidFarmers / totalFarmers) * 100) : 0}% payment rate
-              </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Unpaid</CardTitle>
+            <CardHeader className="flex justify-between items-center">
+              <CardTitle>Unpaid</CardTitle>
               <Clock className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{unpaidFarmers}</div>
-              <p className="text-xs text-muted-foreground mt-1">Awaiting payment</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
+            <CardHeader className="flex justify-between items-center">
+              <CardTitle>Total Revenue</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">₦{totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground mt-1">From {paidFarmers} payments</p>
             </CardContent>
           </Card>
         </div>
@@ -220,11 +191,10 @@ export default function AdminDashboard() {
         {/* Farmers List */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between items-center">
               <CardTitle>Farmers Management</CardTitle>
               <Button>
-                <Users className="mr-2 h-4 w-4" />
-                Add New Farmer
+                <Users className="mr-2 h-4 w-4" /> Add New Farmer
               </Button>
             </div>
             <div className="relative mt-4">
@@ -238,18 +208,22 @@ export default function AdminDashboard() {
             </div>
           </CardHeader>
           <CardContent>
+            {(error || contextError) && (
+              <div className="flex items-center gap-2 bg-red-50 p-3 border border-red-200 rounded-md mb-4">
+                <AlertCircle className="text-red-600 h-5 w-5" />
+                <p className="text-red-600 text-sm">{error || contextError}</p>
+              </div>
+            )}
+
             <div className="space-y-4">
               {filteredFarmers.map((farmer) => (
-                <Card key={farmer.id} className="overflow-hidden">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between p-4 gap-4">
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <h3 className="font-semibold text-lg">{farmer.name}</h3>
-                        <Badge variant={getStatusColor(farmer.status)}>
-                          {farmer.status}
-                        </Badge>
+                <Card key={farmer.id}>
+                  <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold">{farmer.fullname}</h3>
+                        <Badge variant={getStatusColor(farmer.status)}>{farmer.status || "pending"}</Badge>
                         <Badge
-                          variant={farmer.paymentStatus === "success" ? "default" : "outline"}
                           className={
                             farmer.paymentStatus === "success"
                               ? "bg-green-100 text-green-800 border-green-200"
@@ -259,41 +233,21 @@ export default function AdminDashboard() {
                           {farmer.paymentStatus === "success" ? "Paid" : "Unpaid"}
                         </Badge>
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                        <div>
-                          <span className="font-medium">ID:</span> {farmer.id}
-                        </div>
-                        <div>
-                          <span className="font-medium">Phone:</span> {farmer.phone}
-                        </div>
-                        <div>
-                          <span className="font-medium">Location:</span> {farmer.address}
-                        </div>
-                        <div>
-                          <span className="font-medium">Farm Size:</span> {farmer.farmSize}
-                        </div>
-                        <div>
-                          <span className="font-medium">Registered:</span>{" "}
-                          {new Date(farmer.registrationDate).toLocaleDateString()}
-                        </div>
-                        {farmer.paymentStatus === "success" && farmer.paymentAmount && (
-                          <div>
-                            <span className="font-medium">Payment Amount:</span> ₦
-                            {farmer.paymentAmount.toLocaleString()}
-                          </div>
-                        )}
+                      <div className="grid sm:grid-cols-2 gap-1 text-sm text-muted-foreground">
+                        <div>ID: {farmer.id}</div>
+                        <div>Phone: {farmer.phone_number}</div>
+                        <div>Email: {farmer.email || "N/A"}</div>
+                        <div>Address: {farmer.address}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div>
                       {farmer.paymentStatus === "pending" ? (
-                        <Button onClick={() => handlePayClick(farmer)} className="w-full md:w-auto">
-                          <CreditCard className="mr-2 h-4 w-4" />
-                          Pay
+                        <Button onClick={() => handlePayClick(farmer)}>
+                          <CreditCard className="mr-2 h-4 w-4" /> Pay
                         </Button>
                       ) : (
-                        <div className="flex items-center gap-2 text-green-600 px-4 py-2 rounded-md bg-green-50">
-                          <CheckCircle2 className="h-5 w-5" />
-                          <span className="font-medium">Paid</span>
+                        <div className="flex items-center gap-2 text-green-600 bg-green-50 px-4 py-2 rounded-md">
+                          <CheckCircle2 className="h-5 w-5" /> Paid
                         </div>
                       )}
                     </div>
@@ -302,9 +256,9 @@ export default function AdminDashboard() {
               ))}
 
               {filteredFarmers.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No farmers found matching your search.</p>
+                <div className="text-center py-8 text-muted-foreground">
+                  <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>No farmers found.</p>
                 </div>
               )}
             </div>
@@ -320,8 +274,9 @@ export default function AdminDashboard() {
             setSelectedFarmer(null)
           }}
           onSuccess={handlePaymentSuccess}
-          farmerName={selectedFarmer.name}
-          farmerId={selectedFarmer.id}
+          farmerName={selectedFarmer.fullname}
+          farmerId={String(selectedFarmer.id)}
+          farmerEmail={selectedFarmer.email || ""}
         />
       )}
     </div>

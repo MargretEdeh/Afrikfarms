@@ -1,21 +1,86 @@
 "use client"
-import { useState } from "react"
-import { Plus, Filter } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Plus, Filter, Loader2, UserX } from "lucide-react"
+import { toast } from "sonner"
+import { LGAService } from "@/services/lga.service"
 import FarmerTable from "./FarmerTable"
 import AddFarmerModal from "./AddFarmerModal"
 import type { Farmer, FarmerRegistrationData } from "@/types"
 
-import { toast } from "sonner"
-
 interface FarmersSectionProps {
-  farmers: Farmer[]
   onAddFarmer?: (data: FarmerRegistrationData) => Promise<void>
 }
 
-export default function FarmersSection({ farmers: initialFarmers, onAddFarmer }: FarmersSectionProps) {
+// API Response type
+interface ApiFarmer {
+  id: number
+  fullname: string
+  email: string
+  phone_number: string
+  address: string
+  nin: string
+  profile_image: string
+  proof_of_address: string
+  bankId: number
+  account_number: string
+  account_name: string
+  countryId: number
+  stateId: number
+  lgaId: number
+  email_verified: boolean
+  phone_verified: boolean
+  nin_verified: boolean
+  has_paid: boolean
+  status: string
+  account_created_by: number
+  createdAt: string
+  updatedAt: string
+}
+
+export default function FarmersSection({ onAddFarmer }: FarmersSectionProps) {
   const [filter, setFilter] = useState("all")
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [farmers, setFarmers] = useState<Farmer[]>(initialFarmers)
+  const [farmers, setFarmers] = useState<Farmer[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchFarmers()
+  }, [])
+
+  // Transform API response to Farmer type
+  const transformApiFarmer = (apiFarmer: ApiFarmer): Farmer => {
+    return {
+      id: `FRM${String(apiFarmer.id).padStart(4, "0")}`,
+      name: apiFarmer.fullname,
+      email: apiFarmer.email,
+      phone: apiFarmer.phone_number,
+      farmSize: "N/A", // Not provided by API
+      registrationDate: new Date(apiFarmer.createdAt).toLocaleDateString(),
+      status: apiFarmer.status.toLowerCase() as "active" | "pending" | "inactive" | "suspended",
+      nin: apiFarmer.nin,
+      address: apiFarmer.address,
+      state: "", // Will need to map stateId to state name
+      lga: "", // Will need to map lgaId to lga name
+      photoUrl: apiFarmer.profile_image !== "noimage.jpg" ? apiFarmer.profile_image : undefined,
+    }
+  }
+
+  const fetchFarmers = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await LGAService.getFarmers()
+      const apiFarmers = response?.data || []
+      const transformedFarmers = apiFarmers.map(transformApiFarmer)
+      setFarmers(transformedFarmers)
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to load farmers")
+      console.error("Failed to fetch farmers:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleView = (farmer: Farmer) => {
     console.log("View farmer:", farmer)
@@ -29,29 +94,15 @@ export default function FarmersSection({ farmers: initialFarmers, onAddFarmer }:
     try {
       if (onAddFarmer) {
         await onAddFarmer(data)
-      } else {
-        // Default behavior: add to local state
-        const newFarmer: Farmer = {
-          id: `FRM${String(farmers.length + 1).padStart(4, "0")}`,
-          name: data.fullName,
-          email: data.email,
-          phone: data.phone,
-          farmSize: "N/A",
-          registrationDate: new Date().toLocaleDateString(),
-          status: "pending",
-          nin: data.nin,
-          address: data.address,
-          state: data.state,
-          lga: data.lga,
-          photoUrl: typeof data.passportPhoto === "string" ? data.passportPhoto : undefined,
-        }
-        setFarmers([...farmers, newFarmer])
       }
-
+      
       toast.success("Farmer registered successfully")
       setIsModalOpen(false)
+      
+      // Refresh the farmers list
+      await fetchFarmers()
     } catch (error) {
-        toast.error("Failed to register farmer. Please try again.")
+      toast.error("Failed to register farmer. Please try again.")
       throw error
     }
   }
@@ -99,7 +150,58 @@ export default function FarmersSection({ farmers: initialFarmers, onAddFarmer }:
           </div>
         </div>
 
-        <FarmerTable farmers={filteredFarmers} onView={handleView} onEdit={handleEdit} />
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+              <p className="text-gray-500">Loading farmers...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
+            <div className="text-red-600 mb-4">
+              <UserX className="w-12 h-12 mx-auto mb-2" />
+              <h3 className="text-lg font-semibold">Failed to Load Farmers</h3>
+              <p className="text-sm mt-2">{error}</p>
+            </div>
+            <button
+              onClick={fetchFarmers}
+              className="mt-4 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : filteredFarmers.length === 0 ? (
+          <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-12 text-center">
+            <UserX className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              {filter === "all" ? "No Farmers Yet" : `No ${filter.charAt(0).toUpperCase() + filter.slice(1)} Farmers`}
+            </h3>
+            <p className="text-gray-500 mb-6">
+              {filter === "all"
+                ? "Get started by adding your first farmer to the system"
+                : `There are no ${filter} farmers at the moment`}
+            </p>
+            {filter === "all" ? (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center gap-2 bg-primary hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+              >
+                <Plus className="w-5 h-5" />
+                Add Your First Farmer
+              </button>
+            ) : (
+              <button
+                onClick={() => setFilter("all")}
+                className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-xl font-medium transition-colors"
+              >
+                View All Farmers
+              </button>
+            )}
+          </div>
+        ) : (
+          <FarmerTable farmers={filteredFarmers} onView={handleView} onEdit={handleEdit} />
+        )}
       </div>
 
       <AddFarmerModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleAddFarmer} />

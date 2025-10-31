@@ -39,21 +39,40 @@ export interface FarmerRegistrationData {
 }
 
 
+
 export interface Farm {
-  id: string
-  farmerId: string
-  farmerName: string
+  id: number
+  farmerId: number
+  name: string
   location: string
-  gpsCoordinates: { lat: number; lng: number }
-  cropType: string
-  farmSize: number
-  farmStage: string
-  workers: number
-  status: FarmStatus
-  images: string[]
-  videos: string[]
+  latitude: string
+  longitude: string
+  type: 'Crop' | 'Livestock'
+  production_type: string  // Note: underscore, not camelCase
+  size: number
+  sizeUnit: 'Acre' | 'Hectare'
+  stage: 'Cleared' | 'Planted' | 'Harvesting'
+  ownershipDocument: string | null
+  number_of_workers: number
+  verified: boolean
+  status?: 'pending' | 'verified' | 'rejected'  // Optional for filtering
+  createdAt: string
+  updatedAt: string
 }
 
+// If you need backward compatibility, you can also export the old interface with a different name
+export interface LegacyFarm {
+  id: string;
+  farmerName: string;
+  location: string;
+  gpsCoordinates: string;
+  cropType: string;
+  farmSize: number;
+  workers: number;
+  farmStage: string;
+  images?: string[];
+  status: 'pending' | 'verified' | 'rejected';
+}
 export interface Loan {
   id: string
   farmerId: string
