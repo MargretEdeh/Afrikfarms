@@ -16,7 +16,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (identifier: string, password: string, type: 'admin' | 'user') => Promise<void>;
+  login: (identifier: string, password: string, type: 'admin' | 'lga_admin') => Promise<void>;
   logout: () => void;
   registerSuperAdmin: (data: { fullname: string; email: string; password: string }) => Promise<void>;
   createUser: (data: {
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }, []);
 
-  const login = async (identifier: string, password: string, type: 'admin' | 'user') => {
+  const login = async (identifier: string, password: string, type: 'admin' | 'lga_admin') => {
     const data =
       type === 'admin'
         ? await AuthService.loginAdmin(identifier, password)

@@ -111,19 +111,21 @@ export const LGAProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  const fetchFarmers = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const data = await LGAService.getFarmers()
-      setFarmers(data.farmers || data)
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to fetch farmers")
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+const fetchFarmers = useCallback(async () => {
+  setLoading(true)
+  setError(null)
+  try {
+    const response = await LGAService.getFarmers()
+    const farmersArray = response?.data || []  
+    setFarmers(farmersArray)
+  } catch (err: any) {
+    setError(err.response?.data?.message || "Failed to fetch farmers")
+    throw err
+  } finally {
+    setLoading(false)
+  }
+}, [])
+
 
   const getFarmerById = useCallback(async (id: number | string): Promise<Farmer> => {
     setLoading(true)

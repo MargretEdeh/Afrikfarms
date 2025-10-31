@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [userType, setUserType] = useState<'admin' | 'user'>('admin')
+  const [userType, setUserType] = useState<'admin' | 'lga_admin'>('admin')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   
@@ -145,11 +145,11 @@ export default function LoginPage() {
               <select
                 id="userType"
                 value={userType}
-                onChange={(e) => setUserType(e.target.value as 'admin' | 'user')}
+                onChange={(e) => setUserType(e.target.value as 'admin' | 'lga_admin')}
                 className="w-full h-12 px-4 bg-card border border-input rounded-md text-foreground hover:border-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
               >
                 <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value="user">LGA Admin</option>
               </select>
             </div>
 

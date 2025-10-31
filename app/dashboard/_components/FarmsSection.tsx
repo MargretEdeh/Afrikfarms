@@ -6,7 +6,7 @@ import { useLGA } from '@/context/LgaContext'
 import { Farm } from '@/types'
 
 export default function FarmsSection() {
-  const { farms, fetchFarms, createFarm, loading } = useLGA()
+  const { farms, fetchFarms, createFarm, farmers, fetchFarmers, loading } = useLGA()
   const [filter, setFilter] = useState('all')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [formData, setFormData] = useState({
@@ -24,6 +24,7 @@ export default function FarmsSection() {
 
   useEffect(() => {
     fetchFarms()
+    fetchFarmers()
   }, [])
 
   const handleVerify = (farm: Farm) => {
@@ -74,15 +75,20 @@ export default function FarmsSection() {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
-const filteredFarms = Array.isArray(farms) 
-  ? filter === 'all' 
-    ? farms 
-    : filter === 'verified'
-    ? farms.filter(f => f.verified === true)
-    : filter === 'pending'
-    ? farms.filter(f => f.verified === false)
-    : farms
-  : []
+
+  const filteredFarms = Array.isArray(farms) 
+    ? filter === 'all' 
+      ? farms 
+      : filter === 'verified'
+      ? farms.filter(f => f.verified === true)
+      : filter === 'pending'
+      ? farms.filter(f => f.verified === false)
+      : farms
+    : []
+
+  // Ensure farmers is always an array
+  const farmersList = Array.isArray(farmers) ? farmers : []
+
   if (loading && farms.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -172,21 +178,29 @@ const filteredFarms = Array.isArray(farms)
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              {/* Farmer ID */}
+            <div className="p-6 space-y-6">
+              {/* Farmer Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Farmer ID <span className="text-red-500">*</span>
+                  Select Farmer <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <select
                   name="farmerId"
                   value={formData.farmerId}
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  placeholder="Enter farmer ID"
-                />
+                >
+                  <option value="">-- Select a Farmer --</option>
+                  {farmersList.map((farmer) => (
+                    <option key={farmer.id} value={farmer.id}>
+                      {farmer.fullname}
+                    </option>
+                  ))}
+                </select>
+                {farmersList.length === 0 && (
+                  <p className="text-sm text-gray-500 mt-1">No farmers available. Please add farmers first.</p>
+                )}
               </div>
 
               {/* Farm Type */}
@@ -354,7 +368,8 @@ const filteredFarms = Array.isArray(farms)
                   Cancel
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSubmit}
                   disabled={loading}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
@@ -371,7 +386,7 @@ const filteredFarms = Array.isArray(farms)
                   )}
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

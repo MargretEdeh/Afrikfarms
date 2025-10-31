@@ -29,7 +29,7 @@ export default function Sidebar({ onLogout }: { onLogout: () => void }) {
         className="p-6 border-b border-sidebar-border"
       >
         <div className="flex items-center gap-3">
-          {/* <motion.a
+          <motion.a
             href="/"
             className="flex items-center gap-3 group"
             whileHover={{ scale: 1.02 }}
@@ -42,12 +42,12 @@ export default function Sidebar({ onLogout }: { onLogout: () => void }) {
             <div>
               <p className="text-xs text-muted-foreground">LGA Portal</p>
             </div>
-          </motion.a> */}
+          </motion.a>
         </div>
       </motion.div>
 
       {/* User Profile Section */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
@@ -65,7 +65,7 @@ export default function Sidebar({ onLogout }: { onLogout: () => void }) {
             <p className="text-xs text-muted-foreground font-medium">Coordinator</p>
           </div>
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* Navigation Menu */}
       <nav className="flex-1 p-4 overflow-y-auto">
