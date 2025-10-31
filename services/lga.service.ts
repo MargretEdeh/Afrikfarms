@@ -3,18 +3,18 @@ import { verify } from "crypto";
 import { Upload } from "lucide-react";
 
 export interface CreateFarmerData {
-  fullname: string;
-  email?: string | null;
-  phone_number: string;
-  phone_verified: boolean;
-  nin: string;
-  nin_verified: boolean;
-  address: string;
-  bankId: number;
-  account_name: string;
-  account_number: string;
-  profile_image?: string;
-  proof_of_address?: string;
+  fullname: string
+  email?: string | null
+  phone_number: string
+  phone_verified: boolean
+  nin: string
+  nin_verified: boolean
+  address: string
+  bankId: number
+  account_name: string
+  account_number: string
+  profile_image?: string | File   
+  proof_of_address?: string | File 
 }
 
 export interface SendCodeData {

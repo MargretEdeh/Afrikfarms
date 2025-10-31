@@ -20,6 +20,12 @@ import {
   AreaChart,
   Area,
 } from "recharts"
+interface LoanDataItem {
+  name: string
+  value: number
+  color: string
+  percentage: number
+}
 
 export default function Dashboard() {
   const { dashboard, loading, error, fetchDashboard } = useLGA()
@@ -68,21 +74,18 @@ export default function Dashboard() {
     }
   }
 
-  // Transform backend loan data for pie chart
-  const loanData = dashboard.loanDistribution || [
-    { name: "Pending", value: dashboard.pendingLoans || 0, color: "#fb923c", percentage: 0 },
-    { name: "Approved", value: dashboard.approvedLoans || 0, color: "#10b981", percentage: 0 },
-    { name: "Disbursed", value: dashboard.disbursedLoans || 0, color: "#f43f5e", percentage: 0 },
-    { name: "Rejected", value: dashboard.rejectedLoans || 0, color: "#3b82f6", percentage: 0 },
-  ]
+  const loanData: LoanDataItem[] = dashboard.loanDistribution || [
+  { name: "Pending", value: dashboard.pendingLoans || 0, color: "#fb923c", percentage: 0 },
+  { name: "Approved", value: dashboard.approvedLoans || 0, color: "#10b981", percentage: 0 },
+  { name: "Disbursed", value: dashboard.disbursedLoans || 0, color: "#f43f5e", percentage: 0 },
+  { name: "Rejected", value: dashboard.rejectedLoans || 0, color: "#3b82f6", percentage: 0 },
+]
 
-  // Calculate percentages if not provided
-  const totalLoans = loanData.reduce((sum:any, item:any) => sum + item.value, 0)
-  const loanDataWithPercentages = loanData.map(item => ({
-    ...item,
-    percentage: totalLoans > 0 ? Math.round((item.value / totalLoans) * 100) : 0
-  }))
-
+const totalLoans = loanData.reduce((sum, item) => sum + item.value, 0)
+const loanDataWithPercentages = loanData.map(item => ({
+  ...item,
+  percentage: totalLoans > 0 ? Math.round((item.value / totalLoans) * 100) : 0,
+}))
   // Transform backend verification data
   const verificationData = dashboard.verificationTrend || []
 

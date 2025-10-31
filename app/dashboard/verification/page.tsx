@@ -62,9 +62,10 @@ export default function AdminDashboard() {
     
     if (contextFarmers) {
       // Handle if contextFarmers is the response object with data property
-      const farmersArray = Array.isArray(contextFarmers) 
-        ? contextFarmers 
-        : contextFarmers.data || []
+   const farmersArray = Array.isArray(contextFarmers)
+  ? contextFarmers
+  : (contextFarmers as { data?: FarmerWithPayment[] })?.data || []
+
       
       console.log("Farmers array:", farmersArray) // Debug log
       

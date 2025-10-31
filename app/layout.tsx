@@ -1,21 +1,20 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata, Viewport } from "next"
+import { Geist, Geist_Mono } from "next/font/google"
+import "./globals.css"
 
-import QueryProvider from "@/providers/queryProvider";
-import { AuthProvider } from "@/context/AuthContext";
-import { LGAProvider } from "@/context/LgaContext";
-
+import QueryProvider from "@/providers/queryProvider"
+import { AuthProvider } from "@/context/AuthContext"
+import { LGAProvider } from "@/context/LgaContext"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-});
+})
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
+})
 
 export const metadata: Metadata = {
   title: "Afrik Farm | Digital Agriculture Investment Platform",
@@ -38,7 +37,7 @@ export const metadata: Metadata = {
     title: "Afrik Farm | Digital Agriculture Investment Platform",
     description:
       "Transforming African agriculture by connecting farmers with investors worldwide. Transparent, sustainable, and impactful.",
-    url: "https://afrikfarms.vercel.app/", 
+    url: "https://afrikfarms.vercel.app/",
     siteName: "Afrik Farm",
     images: [
       {
@@ -57,20 +56,24 @@ export const metadata: Metadata = {
     description:
       "Afrik Farm empowers 120k+ African farmers with global funding, agronomy, and market access.",
     images: ["/og-image.jpg"],
-    creator: "@AfrikFarm", 
+    creator: "@AfrikFarm",
   },
-  metadataBase: new URL("https://AfrikFarms.vercel.app"), 
-  themeColor: "#205E0E",
+  metadataBase: new URL("https://afrikfarms.vercel.app"),
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-};
+}
+
+// ✅ NEW: Move themeColor here instead
+export const viewport: Viewport = {
+  themeColor: "#205E0E",
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
@@ -79,12 +82,10 @@ export default function RootLayout({
       >
         <QueryProvider>
           <AuthProvider>
-            <LGAProvider>
-        {children}
-            </LGAProvider>
+            <LGAProvider>{children}</LGAProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
     </html>
-  );
+  )
 }

@@ -26,26 +26,24 @@ interface Farmer {
   updatedAt?: string
 }
 
-interface Farm {
-  id?: number
+export interface Farm {
+  id: number
   farmerId: number
   name: string
-  type: "Crop" | "Livestock"
-  productionType?: string
-  production_type: string
   location: string
-  longitude: string
   latitude: string
+  longitude: string
+  type: 'Crop' | 'Livestock'
+  production_type: string  // Note: underscore, not camelCase
   size: number
-  sizeUnit: "Hectare" | "Acre"
-  stage: "Cleared" | "Planted" | "Harvesting"
-  ownershipDocument?: string | null
+  sizeUnit: 'Acre' | 'Hectare'
+  stage: 'Cleared' | 'Planted' | 'Harvesting'
+  ownershipDocument: string | null
   number_of_workers: number
   verified: boolean
-  status?: "pending" | "verified" | "rejected"
-  createdAt?: string
-  updatedAt?: string
-  [key: string]: any
+  status?: 'pending' | 'verified' | 'rejected'  // Optional for filtering
+  createdAt: string
+  updatedAt: string
 }
 
 interface DashboardData {
