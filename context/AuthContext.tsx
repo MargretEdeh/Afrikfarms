@@ -4,6 +4,24 @@ import { useRouter } from 'next/navigation';
 import { AuthService } from '@/services/auth.service';
 import { useQueryClient } from '@tanstack/react-query';
 
+function setCookie(name: string, value: string, days: number = 7) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict`;
+}
+
+function getCookie(name: string): string | null {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop()?.split(';').shift() || '');
+  }
+  return null;
+}
+
+function deleteCookie(name: string) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
+
 interface User {
   id?: number;
   fullname?: string;
@@ -41,8 +59,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
+    // Check both localStorage and cookies for user data
     const savedUser = localStorage.getItem('user');
-    if (savedUser) setUser(JSON.parse(savedUser));
+    const token = getCookie('token');
+    
+    if (savedUser && token) {
+      setUser(JSON.parse(savedUser));
+    }
     setLoading(false);
   }, []);
 
@@ -54,15 +77,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     console.log('Raw login response:', data);
 
-    // Extract user data based on response structure
     const responseUser = data.user || data.admin;
     const userData: User = { ...responseUser, token: data.token };
 
     setUser(userData);
+    
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(userData));
+    setCookie('token', data.token, 7); 
 
-    // Role-based routing - get role directly from response
     const userRole = responseUser?.role;
     
     console.log('User role for routing:', userRole);
@@ -87,10 +110,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const res = await AuthService.registerSuperAdmin(data);
     const userData: User = { ...(res.admin || res.newAdmin), token: res.token };
     setUser(userData);
+    
     localStorage.setItem('token', res.token);
     localStorage.setItem('user', JSON.stringify(userData));
+    setCookie('token', res.token, 7); // Store in cookie for middleware
     
-    // Redirect to admin dashboard after registration
     router.push('/admin/dashboard');
   };
 
@@ -110,8 +134,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    // Clear BOTH localStorage AND cookies
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    deleteCookie('token');
     queryClient.clear();
     setUser(null);
     AuthService.logout();

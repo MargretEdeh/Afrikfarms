@@ -51,6 +51,11 @@ export const AuthService = {
     return response.data;
   },
 
+  getLgas: async () => {
+    const response = await apiClient.get("/admin/lgas");
+    return response.data;
+  },
+
   logout: async () => {
     const response = await apiClient.post("/auth/admin-logout");
     return response.data;

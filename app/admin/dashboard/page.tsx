@@ -192,8 +192,10 @@ export default function CreateUserPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [countries, setCountries] = useState<any[]>([]);
   const [states, setStates] = useState<any[]>([]);
+  const [lgas, setLgas] = useState<any[]>([]);
   const [loadingCountries, setLoadingCountries] = useState(false);
   const [loadingStates, setLoadingStates] = useState(false);
+  const [loadingLgas, setLoadingLgas] = useState(false);
 
   // Fetch countries on component mount
   useEffect(() => {
@@ -231,12 +233,38 @@ export default function CreateUserPage() {
         }
       } else {
         setStates([]);
-        setFormData(prev => ({ ...prev, state_id: 0 }));
+        setFormData(prev => ({ ...prev, state_id: 0, lga_id: 0 }));
       }
     };
 
     fetchStates();
   }, [formData.country_id]);
+
+  // Fetch LGAs when state is selected
+  useEffect(() => {
+    const fetchLgas = async () => {
+      if (formData.state_id > 0) {
+        setLoadingLgas(true);
+        try {
+          const response = await AuthService.getLgas();
+          // Filter LGAs by selected state
+          const filteredLgas = response.data?.filter(
+            (lga: any) => lga.stateId === formData.state_id
+          ) || [];
+          setLgas(filteredLgas);
+        } catch (error) {
+          console.error('Error fetching LGAs:', error);
+        } finally {
+          setLoadingLgas(false);
+        }
+      } else {
+        setLgas([]);
+        setFormData(prev => ({ ...prev, lga_id: 0 }));
+      }
+    };
+
+    fetchLgas();
+  }, [formData.state_id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -254,12 +282,17 @@ export default function CreateUserPage() {
     setFormData(prev => ({ 
       ...prev, 
       country_id: Number(value),
-      state_id: 0 // Reset state when country changes
+      state_id: 0,
+      lga_id: 0
     }));
   };
 
   const handleStateChange = (value: string) => {
-    setFormData(prev => ({ ...prev, state_id: Number(value) }));
+    setFormData(prev => ({ ...prev, state_id: Number(value), lga_id: 0 }));
+  };
+
+  const handleLgaChange = (value: string) => {
+    setFormData(prev => ({ ...prev, lga_id: Number(value) }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -283,8 +316,9 @@ export default function CreateUserPage() {
         state_id: 0,
         lga_id: 0,
       });
-      // Reset states when form is cleared
+      // Reset states and LGAs when form is cleared
       setStates([]);
+      setLgas([]);
     } catch (err: any) {
       setMessage('❌ Failed to create user.');
     } finally {
@@ -378,10 +412,10 @@ export default function CreateUserPage() {
                 Role *
               </Label>
               <Select value={formData.role} onValueChange={handleRoleChange} required>
-                <SelectTrigger id="role" className="h-11 bg-background border-input">
+                <SelectTrigger id="role" className="h-11 bg-background border-input w-full">
                   <SelectValue placeholder="Select user role" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background">
                   <SelectItem value="super_admin">Super Admin</SelectItem>
                   <SelectItem value="state_admin">State Admin</SelectItem>
                   <SelectItem value="lga_admin">LGA Admin</SelectItem>
@@ -399,10 +433,10 @@ export default function CreateUserPage() {
                 onValueChange={handleCountryChange}
                 disabled={loadingCountries}
               >
-                <SelectTrigger id="country_id" className="h-11 bg-background border-input">
+                <SelectTrigger id="country_id" className="h-11 bg-background border-input w-full">
                   <SelectValue placeholder={loadingCountries ? "Loading countries..." : "Select country"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background">
                   {countries.map((country) => (
                     <SelectItem key={country.id} value={country.id.toString()}>
                       {country.name}
@@ -422,7 +456,7 @@ export default function CreateUserPage() {
                 onValueChange={handleStateChange}
                 disabled={!formData.country_id || loadingStates}
               >
-                <SelectTrigger id="state_id" className="h-11 bg-background border-input">
+                <SelectTrigger id="state_id" className="h-11 bg-background border-input w-full">
                   <SelectValue 
                     placeholder={
                       !formData.country_id 
@@ -433,7 +467,7 @@ export default function CreateUserPage() {
                     } 
                   />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background">
                   {states.map((state) => (
                     <SelectItem key={state.id} value={state.id.toString()}>
                       {state.name}
@@ -443,21 +477,35 @@ export default function CreateUserPage() {
               </Select>
             </div>
 
-            {/* LGA ID */}
+            {/* LGA Dropdown */}
             <div className="space-y-2">
               <Label htmlFor="lga_id" className="text-foreground font-medium">
-                LGA ID
+                LGA
               </Label>
-              <Input
-                id="lga_id"
-                type="number"
-                name="lga_id"
-                placeholder="Enter LGA ID"
-                value={formData.lga_id || ''}
-                onChange={handleChange}
-                className="h-11 bg-background border-input"
-                min="0"
-              />
+              <Select 
+                value={formData.lga_id.toString()} 
+                onValueChange={handleLgaChange}
+                disabled={!formData.state_id || loadingLgas}
+              >
+                <SelectTrigger id="lga_id" className="h-11 bg-background border-input w-full">
+                  <SelectValue 
+                    placeholder={
+                      !formData.state_id 
+                        ? "Select state first" 
+                        : loadingLgas 
+                        ? "Loading LGAs..." 
+                        : "Select LGA"
+                    } 
+                  />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  {lgas.map((lga) => (
+                    <SelectItem key={lga.id} value={lga.id.toString()}>
+                      {lga.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Submit Button */}
