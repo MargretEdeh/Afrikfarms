@@ -1,0 +1,16 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/admin/dashboard/page": "/admin/dashboard",
+  "/dashboard/admin/page": "/dashboard/admin",
+  "/dashboard/farmers/page": "/dashboard/farmers",
+  "/dashboard/farms/page": "/dashboard/farms",
+  "/dashboard/loans/page": "/dashboard/loans",
+  "/dashboard/page": "/dashboard",
+  "/dashboard/updates/page": "/dashboard/updates",
+  "/dashboard/verification/page": "/dashboard/verification",
+  "/favicon.ico/route": "/favicon.ico",
+  "/login/admin/page": "/login/admin",
+  "/login/page": "/login",
+  "/page": "/",
+  "/payment/verify/page": "/payment/verify"
+}
