@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import PaymentModal from "../_components/PaymentModal"
 import { useLGA } from "@/context/LgaContext"
+import Link from "next/link"
 
 type PaymentStatus = "pending" | "success" | "failed"
 
@@ -44,7 +45,6 @@ export default function AdminDashboard() {
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // ✅ Fetch only once on mount — no infinite loop
   useEffect(() => {
     const loadFarmers = async () => {
       try {
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
   : (contextFarmers as { data?: FarmerWithPayment[] })?.data || []
 
       
-      console.log("Farmers array:", farmersArray) // Debug log
+      console.log("Farmers array:", farmersArray) 
       
       if (farmersArray.length > 0) {
         const transformed = farmersArray.map((f: any) => ({
@@ -195,7 +195,9 @@ export default function AdminDashboard() {
             <div className="flex justify-between items-center">
               <CardTitle>Farmers Management</CardTitle>
               <Button>
+                <Link className="flex items-center" href="/dashboard/farmers">
                 <Users className="mr-2 h-4 w-4" /> Add New Farmer
+                </Link>
               </Button>
             </div>
             <div className="relative mt-4">
