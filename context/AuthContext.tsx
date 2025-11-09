@@ -89,6 +89,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userRole = responseUser?.role;
     
     console.log('User role for routing:', userRole);
+    setCookie('role', userRole, 7);
+
     
     switch (userRole) {
       case 'lga_admin':

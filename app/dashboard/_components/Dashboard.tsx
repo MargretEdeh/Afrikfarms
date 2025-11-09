@@ -410,35 +410,49 @@ const loanDataWithPercentages = loanData.map(item => ({
                   <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
-                {activities.map((activity: any, index: number) => (
-                  <motion.tr
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 + index * 0.1 }}
-                    className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-                  >
-                    <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                      {activity.farmer || activity.farmerName || 'N/A'}
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
-                      {activity.activity || activity.activityType || 'N/A'}
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
-                      {activity.date || new Date(activity.createdAt).toLocaleDateString() || 'N/A'}
-                    </td>
-                    <td className="py-3 px-4">
-                      <motion.span
-                        whileHover={{ scale: 1.05 }}
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(activity.status || 'pending')}`}
-                      >
-                        {activity.status || 'pending'}
-                      </motion.span>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
+            <tbody className="divide-y divide-gray-200">
+  {activities.map((activity: any, index: number) => (
+    <motion.tr
+      key={index}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.6 + index * 0.1 }}
+      className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+    >
+      {/* Farmer Name */}
+      <td className="py-3 px-4 text-sm font-medium text-gray-900">
+        {activity.data?.fullname || "Unknown Farmer"}
+      </td>
+
+      {/* Activity Message */}
+      <td className="py-3 px-4 text-sm text-gray-600">
+        {activity.message}
+      </td>
+
+      {/* Date */}
+      <td className="py-3 px-4 text-sm text-gray-600">
+        {new Date(activity.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        })}
+      </td>
+
+      {/* Activity Type (converted to readable form) */}
+      <td className="py-3 px-4">
+        <motion.span
+          whileHover={{ scale: 1.05 }}
+          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700"
+        >
+          {activity.type.replace(/_/g, " ")} 
+        </motion.span>
+      </td>
+    </motion.tr>
+  ))}
+</tbody>
+
             </table>
           </div>
         ) : (

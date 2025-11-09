@@ -1,16 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/admin/dashboard/page": "app/admin/dashboard/page.js",
-  "/dashboard/admin/page": "app/dashboard/admin/page.js",
-  "/dashboard/farmers/page": "app/dashboard/farmers/page.js",
-  "/dashboard/farms/page": "app/dashboard/farms/page.js",
-  "/dashboard/loans/page": "app/dashboard/loans/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/updates/page": "app/dashboard/updates/page.js",
-  "/dashboard/verification/page": "app/dashboard/verification/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/login/admin/page": "app/login/admin/page.js",
-  "/login/page": "app/login/page.js",
-  "/page": "app/page.js",
-  "/payment/verify/page": "app/payment/verify/page.js"
+  "/page": "app/page.js"
 }

@@ -5,6 +5,7 @@ import "./globals.css"
 import QueryProvider from "@/providers/queryProvider"
 import { AuthProvider } from "@/context/AuthContext"
 import { LGAProvider } from "@/context/LgaContext"
+import { AdminProvider } from "@/context/AdminContext"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,7 +83,9 @@ export default function RootLayout({
       >
         <QueryProvider>
           <AuthProvider>
+            <AdminProvider>
             <LGAProvider>{children}</LGAProvider>
+            </AdminProvider>
           </AuthProvider>
         </QueryProvider>
       </body>

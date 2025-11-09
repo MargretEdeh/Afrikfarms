@@ -1,6 +1,4 @@
 import apiClient from "@/lib/apiClient";
-import { verify } from "crypto";
-import { Upload } from "lucide-react";
 
 export interface CreateFarmerData {
   fullname: string
