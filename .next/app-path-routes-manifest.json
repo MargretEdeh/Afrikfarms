@@ -1,6 +1,11 @@
 {
   "/_not-found/page": "/_not-found",
+  "/admin/dashboard/create-admin/page": "/admin/dashboard/create-admin",
+  "/admin/dashboard/farmers/page": "/admin/dashboard/farmers",
+  "/admin/dashboard/farms/page": "/admin/dashboard/farms",
   "/admin/dashboard/page": "/admin/dashboard",
+  "/admin/dashboard/revenue/page": "/admin/dashboard/revenue",
+  "/admin/dashboard/updates/page": "/admin/dashboard/updates",
   "/dashboard/admin/page": "/dashboard/admin",
   "/dashboard/farmers/page": "/dashboard/farmers",
   "/dashboard/farms/page": "/dashboard/farms",
