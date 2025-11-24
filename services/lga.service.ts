@@ -4,7 +4,7 @@ export interface CreateFarmerData {
   fullname: string
   email?: string | null
   phone_number: string
-  phone_verified: boolean
+  // phone_verified: boolean
   nin: string
   nin_verified: boolean
   address: string

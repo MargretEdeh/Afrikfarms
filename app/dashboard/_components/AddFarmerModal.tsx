@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 "use client"
 
-import { useState , useEffect} from "react"
+import { useState, useEffect } from "react"
 import { Check, Loader2, Upload, AlertCircle } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -21,17 +21,17 @@ interface AddFarmerModalProps {
 export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerModalProps) {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [otpSent, setOtpSent] = useState(false)
-  const [otpVerified, setOtpVerified] = useState(false)
+  // OTP state variables removed: const [otpSent, setOtpSent] = useState(false)
+  // OTP state variables removed: const [otpVerified, setOtpVerified] = useState(false)
   const [ninVerified, setNinVerified] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [banks, setBanks] = useState<Array<{id: number, name: string, code: string}>>([])
+  const [banks, setBanks] = useState<Array<{ id: number, name: string, code: string }>>([])
 
   const [formData, setFormData] = useState<Partial<FarmerRegistrationData>>({
     fullName: "",
     email: "",
     phone: "",
-    otpCode: "",
+    // otpCode removed
     acceptedTerms: false,
     nin: "",
     address: "",
@@ -41,13 +41,13 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     accountNumber: "",
     accountName: "",
   })
-    useEffect(() => {
-  if (open) {
-    fetchBanks()
-  }
-}, [open])
 
- 
+  useEffect(() => {
+    if (open) {
+      fetchBanks()
+    }
+  }, [open])
+
 
   const nigerianStates = [
     "Abia",
@@ -96,65 +96,20 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     setError(null)
   }
 
-  const handleSendOTP = async () => {
-    if (!formData.phone) {
-      setError("Phone number is required")
-      return
-    }
+  // OTP functions (handleSendOTP, handleVerifyOTP) removed
 
-    setLoading(true)
-    setError(null)
-
+  const fetchBanks = async () => {
     try {
-      await LGAService.sendCode({ phone_number: formData.phone })
-      setOtpSent(true)
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "Failed to send OTP. Please try again.")
-    } finally {
-      setLoading(false)
+      const response = await LGAService.getBanks()
+      setBanks(response?.data || [])
+    } catch (err) {
+      console.error('Failed to fetch banks:', err)
     }
   }
-
-  const handleVerifyOTP = async () => {
-    if (!formData.otpCode || formData.otpCode.length !== 6) {
-      setError("Please enter a valid 6-digit OTP")
-      return
-    }
-
-    setLoading(true)
-    setError(null)
-
-    try {
-      await LGAService.verifyCode({
-        phone_number: formData.phone!,
-        code: formData.otpCode,
-      })
-      setOtpVerified(true)
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "Invalid OTP. Please try again.")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-
-const fetchBanks = async () => {
-  try {
-    const response = await LGAService.getBanks() 
-    setBanks(response?.data || [])
-  } catch (err) {
-    console.error('Failed to fetch banks:', err)
-  }
-} 
 
   const handleStep1Submit = () => {
     if (!formData.fullName || !formData.phone) {
-      setError("Please fill in all required fields")
-      return
-    }
-
-    if (!otpVerified) {
-      setError("Please verify your phone number with OTP")
+      setError("Please fill in all required fields (Full Name and Phone Number)")
       return
     }
 
@@ -192,28 +147,32 @@ const fetchBanks = async () => {
     }
   }
 
- const handleFileUpload = async (field: "passportPhoto" | "proofOfAddress", file: File) => {
-    setLoading(true)
-    setError(null)
+  const handleFileUpload = async (field: "passportPhoto" | "proofOfAddress", file: File) => {
+  setLoading(true)
+  setError(null)
 
-    try {
-      const formData = new FormData()
-      
-      if (field === "passportPhoto") {
-        formData.append("profile_image", file)
-        const response = await LGAService.uploadProfileImage(formData)
-        handleInputChange(field, response?.data?.url || response?.url)
-      } else if (field === "proofOfAddress") {
-        formData.append("proof_of_address", file)
-        const response = await LGAService.UploadProofOfAddress(formData)
-        handleInputChange(field, response?.data?.url || response?.url)
-      }
-    } catch (err: any) {
-      setError(err?.response?.data?.message || `Failed to upload ${field === "passportPhoto" ? "photo" : "document"}. Please try again.`)
-    } finally {
-      setLoading(false)
+  try {
+    const uploadFormData = new FormData() // Renamed to avoid conflict with state formData
+
+    if (field === "passportPhoto") {
+      uploadFormData.append("profile_image", file)
+      const response = await LGAService.uploadProfileImage(uploadFormData)
+      // Fixed: Access image_url from response
+      const imageUrl = response?.data?.image_url || response?.image_url
+      handleInputChange(field, imageUrl)
+    } else if (field === "proofOfAddress") {
+      uploadFormData.append("proof_of_address", file)
+      const response = await LGAService.UploadProofOfAddress(uploadFormData)
+      // Fixed: Access image_url from response
+      const imageUrl = response?.data?.image_url || response?.image_url
+      handleInputChange(field, imageUrl)
     }
+  } catch (err: any) {
+    setError(err?.response?.data?.message || `Failed to upload ${field === "passportPhoto" ? "photo" : "document"}. Please try again.`)
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleFinalSubmit = async () => {
   if (!formData.nin || !formData.address || !formData.state || !formData.lga || !formData.bankName || !formData.accountNumber || !formData.accountName) {
@@ -226,7 +185,7 @@ const fetchBanks = async () => {
     return
   }
 
-  if (formData.accountNumber.length !== 10) {
+  if (formData.accountNumber && formData.accountNumber.length !== 10) {
     setError("Account number must be 10 digits")
     return
   }
@@ -239,18 +198,19 @@ const fetchBanks = async () => {
       fullname: formData.fullName!,
       email: formData.email || null,
       phone_number: formData.phone!,
-      phone_verified: otpVerified,
       nin: formData.nin,
       nin_verified: ninVerified,
       address: formData.address,
+      state: formData.state,
+      lga: formData.lga,
       bankId: parseInt(formData.bankName!),
       account_name: formData.accountName,
       account_number: formData.accountNumber,
-      profile_image: formData.passportPhoto || "noimage.jpg",  
-      proof_of_address: formData.proofOfAddress || "noimage.jpg",  
+      profile_image: formData.passportPhoto || "noimage.jpg",
+      proof_of_address: formData.proofOfAddress || "noimage.jpg",
     }
 
-    console.log('Submitting farmer data:', apiData) 
+    console.log('Submitting farmer data:', apiData)
 
     await LGAService.createFarmer(apiData)
     await onSubmit(formData as FarmerRegistrationData)
@@ -264,15 +224,15 @@ const fetchBanks = async () => {
 
   const handleClose = () => {
     setStep(1)
-    setOtpSent(false)
-    setOtpVerified(false)
+    // setOtpSent(false) removed
+    // setOtpVerified(false) removed
     setNinVerified(false)
     setError(null)
     setFormData({
       fullName: "",
       email: "",
       phone: "",
-      otpCode: "",
+      // otpCode: "", removed
       acceptedTerms: false,
       nin: "",
       address: "",
@@ -340,7 +300,7 @@ const fetchBanks = async () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address (Optional)</Label>
+              <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
@@ -360,42 +320,11 @@ const fetchBanks = async () => {
                   placeholder="+234 800 000 0000"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
-                  disabled={otpVerified}
                 />
-                {!otpVerified && (
-                  <Button onClick={handleSendOTP} disabled={loading || !formData.phone} variant="outline">
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : otpSent ? "Resend OTP" : "Send OTP"}
-                  </Button>
-                )}
-                {otpVerified && (
-                  <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg">
-                    <Check className="w-4 h-4" />
-                    <span className="text-sm font-medium">Verified</span>
-                  </div>
-                )}
               </div>
             </div>
 
-            {otpSent && !otpVerified && (
-              <div className="space-y-2">
-                <Label htmlFor="otp">
-                  Enter OTP <span className="text-red-500">*</span>
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="otp"
-                    placeholder="000000"
-                    maxLength={6}
-                    value={formData.otpCode}
-                    onChange={(e) => handleInputChange("otpCode", e.target.value.replace(/\D/g, ""))}
-                  />
-                  <Button onClick={handleVerifyOTP} disabled={loading}>
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify"}
-                  </Button>
-                </div>
-                <p className="text-xs text-gray-500">Enter the 6-digit code sent to your phone/email</p>
-              </div>
-            )}
+            {/* OTP section removed */}
 
             <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
               <Checkbox
@@ -423,7 +352,7 @@ const fetchBanks = async () => {
               </Button>
               <Button
                 onClick={handleStep1Submit}
-                disabled={!otpVerified || !formData.acceptedTerms}
+                disabled={!formData.fullName || !formData.phone || !formData.acceptedTerms}
                 className="bg-primary hover:bg-emerald-700"
               >
                 Continue to KYC
@@ -563,19 +492,19 @@ const fetchBanks = async () => {
                       <Label htmlFor="bankName">
                         Bank Name <span className="text-red-500">*</span>
                       </Label>
-                   <select
-  id="bankName"
-  value={formData.bankName}
-  onChange={(e) => handleInputChange("bankName", e.target.value)}
-  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
->
-  <option value="">Select Bank</option>
-  {banks.map((bank) => (
-    <option key={bank.id} value={bank.id.toString()}>
-      {bank.name}
-    </option>
-  ))}
-</select>
+                      <select
+                        id="bankName"
+                        value={formData.bankName}
+                        onChange={(e) => handleInputChange("bankName", e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      >
+                        <option value="">Select Bank</option>
+                        {banks.map((bank) => (
+                          <option key={bank.id} value={bank.id.toString()}>
+                            {bank.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div className="space-y-2">
