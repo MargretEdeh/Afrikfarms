@@ -6,7 +6,8 @@ export function middleware(request: NextRequest) {
   const role = request.cookies.get('role')?.value;
   const { pathname } = request.nextUrl;
 
-  const publicRoutes = ['/login', '/register'];
+  // Make payment verify a public route so payment provider callbacks aren't blocked
+  const publicRoutes = ['/login', '/register', '/payment/verify'];
   const isPublicRoute = pathname === '/' || publicRoutes.some(route => pathname.startsWith(route));
 
   // If not logged in → send to login

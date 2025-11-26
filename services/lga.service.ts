@@ -74,24 +74,37 @@ export const LGAService = {
     return response.data;
   },
   
-  uploadProfileImage: async (data: FormData) => {
+  uploadProfileImage: async (data: FormData, onUploadProgress?: (progressEvent?: any) => void) => {
     const response = await apiClient.post("/lga/upload-profile-image", data, {
       headers: {
         'Content-Type': 'multipart/form-data'
-      }
+      },
+      onUploadProgress,
     });
     return response.data;
   },
-  UploadProofOfAddress: async (data: FormData) => {
+  UploadProofOfAddress: async (data: FormData, onUploadProgress?: (progressEvent?: any) => void) => {
     const response = await apiClient.post("/lga/upload-proof-of-address", data, {
       headers: {
         'Content-Type': 'multipart/form-data'
-      }
+      },
+      onUploadProgress,
     });
     return response.data;
   },
   getBanks: async () => {
     const response = await apiClient.get("/banks");
+    return response.data;
+  },
+
+  // Resolve account name given bank code and account number (GET with query params)
+  getAccountName: async (params: { bankCode: string; accountNumber: string }) => {
+    const response = await apiClient.get("/get-account-name", {
+      params: {
+        bank_code: params.bankCode,
+        account_number: params.accountNumber,
+      },
+    })
     return response.data;
   },
 

@@ -6,7 +6,11 @@ import { useQueryClient } from '@tanstack/react-query';
 
 function setCookie(name: string, value: string, days: number = 7) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict`;
+  // Use SameSite=Lax so cookie is sent on top-level GET navigations
+  // (e.g. payment provider callbacks) while still providing CSRF protections.
+  const sameSite = 'Lax';
+  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=${sameSite}${secure}`;
 }
 
 function getCookie(name: string): string | null {
@@ -19,7 +23,24 @@ function getCookie(name: string): string | null {
 }
 
 function deleteCookie(name: string) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  // set expiry in the past and ensure path and SameSite are included
+  const sameSite = 'Lax';
+  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=${sameSite}${secure}`;
+}
+
+function clearAllCookies() {
+  // iterate all cookies and expire them
+  const cookies = document.cookie.split(';');
+  for (const cookie of cookies) {
+    const eqPos = cookie.indexOf('=');
+    const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+    if (name) {
+      const sameSite = 'Lax';
+      const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=${sameSite}${secure}`;
+    }
+  }
 }
 
 interface User {
@@ -135,15 +156,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await AuthService.createUser(data);
   };
 
-  const logout = () => {
-    // Clear BOTH localStorage AND cookies
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    deleteCookie('token');
+  const logout = async () => {
+    try {
+      // attempt server-side logout but don't block local cleanup if it fails
+      await AuthService.logout();
+    } catch (err) {
+      console.error('Error during server logout:', err);
+    }
+
+    // Clear local storage and all cookies to ensure no auth remnants remain
+    try {
+      localStorage.clear();
+    } catch (err) {
+      console.error('Error clearing localStorage:', err);
+      // fallback to explicit removals
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+
+    try {
+      clearAllCookies();
+    } catch (err) {
+      console.error('Error clearing cookies:', err);
+      // best effort to remove common auth cookies
+      deleteCookie('token');
+      deleteCookie('role');
+    }
+
     queryClient.clear();
     setUser(null);
-    AuthService.logout();
-    window.location.href = '/login';
+
+    // navigate to login page
+    try {
+      router.push('/login');
+    } catch (err) {
+      // final fallback
+      window.location.href = '/login';
+    }
   };
 
   return (
