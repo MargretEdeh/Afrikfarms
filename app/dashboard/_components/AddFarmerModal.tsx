@@ -41,12 +41,73 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
     accountNumber: "",
     accountName: "",
   })
+  const [passportPreview, setPassportPreview] = useState<string | null>(null)
+  const [proofPreview, setProofPreview] = useState<string | null>(null)
+  const [passportPreviewType, setPassportPreviewType] = useState<string | null>(null)
+  const [proofPreviewType, setProofPreviewType] = useState<string | null>(null)
+  const [passportFileName, setPassportFileName] = useState<string | null>(null)
+  const [proofFileName, setProofFileName] = useState<string | null>(null)
+  const [passportUploadProgress, setPassportUploadProgress] = useState<number | null>(null)
+  const [proofUploadProgress, setProofUploadProgress] = useState<number | null>(null)
+  const [passportUploadError, setPassportUploadError] = useState<string | null>(null)
+  const [proofUploadError, setProofUploadError] = useState<string | null>(null)
+  const [accountLookupLoading, setAccountLookupLoading] = useState(false)
+  const [accountLookupError, setAccountLookupError] = useState<string | null>(null)
 
   useEffect(() => {
     if (open) {
       fetchBanks()
     }
   }, [open])
+
+  // Auto-resolve account name when a bank is selected and a 10-digit account number is entered
+  useEffect(() => {
+    const bank = formData.bankName
+    const acc = formData.accountNumber
+    let cancelled = false
+
+    if (bank && acc && acc.length === 10) {
+      // Resolve the bank code using the selected bank id
+      const selectedBank = banks.find((b) => b.id.toString() === String(bank))
+      const bankCode = selectedBank?.code
+
+      if (!bankCode) {
+        setAccountLookupError("Selected bank code not available")
+        return
+      }
+
+      setAccountLookupLoading(true)
+      setAccountLookupError(null)
+
+      ;(async () => {
+        try {
+          const res = await LGAService.getAccountName({ bankCode: bankCode, accountNumber: acc })
+          if (cancelled) return
+          const resolvedName =
+            res?.account_name ||
+            res?.accountName ||
+            res?.name ||
+            res?.data?.account_name ||
+            res?.data?.data?.account_name ||
+            null
+          if (resolvedName) {
+            handleInputChange("accountName", resolvedName)
+          } else {
+            setAccountLookupError("Account name not found")
+          }
+        } catch (err: any) {
+          if (cancelled) return
+          setAccountLookupError(err?.response?.data?.message || "Failed to resolve account name")
+        } finally {
+          if (!cancelled) setAccountLookupLoading(false)
+        }
+      })()
+    }
+
+    return () => {
+      cancelled = true
+    }
+  }, [formData.bankName, formData.accountNumber])
 
 
   const nigerianStates = [
@@ -151,24 +212,79 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
   setLoading(true)
   setError(null)
 
+  // Create a local preview immediately
+  const localUrl = URL.createObjectURL(file)
+  if (field === "passportPhoto") {
+    setPassportPreview(localUrl)
+    setPassportPreviewType(file.type)
+    setPassportFileName(file.name)
+    setPassportUploadProgress(0)
+    setPassportUploadError(null)
+  } else {
+    setProofPreview(localUrl)
+    setProofPreviewType(file.type)
+    setProofFileName(file.name)
+    setProofUploadProgress(0)
+    setProofUploadError(null)
+  }
+
   try {
-    const uploadFormData = new FormData() // Renamed to avoid conflict with state formData
+    const uploadFormData = new FormData()
 
     if (field === "passportPhoto") {
       uploadFormData.append("profile_image", file)
-      const response = await LGAService.uploadProfileImage(uploadFormData)
-      // Fixed: Access image_url from response
+      const response = await LGAService.uploadProfileImage(uploadFormData, (ev: any) => {
+        try {
+          if (ev.lengthComputable) {
+            const percent = Math.round((ev.loaded * 100) / ev.total)
+            setPassportUploadProgress(percent)
+          }
+        } catch (e) {}
+      })
       const imageUrl = response?.data?.image_url || response?.image_url
-      handleInputChange(field, imageUrl)
+      if (imageUrl) {
+        handleInputChange(field, imageUrl)
+        // Use server URL for preview if available
+        setPassportPreview(imageUrl)
+        setPassportPreviewType((prev) => prev || "image/*")
+        setPassportFileName((prev) => prev || null)
+      }
+      // upload finished, hide progress
+      setTimeout(() => setPassportUploadProgress(null), 400)
     } else if (field === "proofOfAddress") {
       uploadFormData.append("proof_of_address", file)
-      const response = await LGAService.UploadProofOfAddress(uploadFormData)
-      // Fixed: Access image_url from response
+      const response = await LGAService.UploadProofOfAddress(uploadFormData, (ev: any) => {
+        try {
+          if (ev.lengthComputable) {
+            const percent = Math.round((ev.loaded * 100) / ev.total)
+            setProofUploadProgress(percent)
+          }
+        } catch (e) {}
+      })
       const imageUrl = response?.data?.image_url || response?.image_url
-      handleInputChange(field, imageUrl)
+      if (imageUrl) {
+        handleInputChange(field, imageUrl)
+        setProofPreview(imageUrl)
+        setProofPreviewType((prev) => prev || "image/*")
+        setProofFileName((prev) => prev || null)
+      }
+      setTimeout(() => setProofUploadProgress(null), 400)
     }
   } catch (err: any) {
-    setError(err?.response?.data?.message || `Failed to upload ${field === "passportPhoto" ? "photo" : "document"}. Please try again.`)
+    const message = err?.response?.data?.message || `Failed to upload ${field === "passportPhoto" ? "photo" : "document"}. Please try again.`
+    setError(message)
+    // set field-specific upload error
+    if (field === "passportPhoto") {
+      setPassportUploadError(message)
+      setPassportUploadProgress(null)
+    } else {
+      setProofUploadError(message)
+      setProofUploadProgress(null)
+    }
+    // On error, revoke the local preview and clear the related preview
+    if (localUrl) URL.revokeObjectURL(localUrl)
+    if (field === "passportPhoto") setPassportPreview(null)
+    else setProofPreview(null)
   } finally {
     setLoading(false)
   }
@@ -242,6 +358,18 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
       accountNumber: "",
       accountName: "",
     })
+    if (passportPreview && passportPreview.startsWith?.("blob:")) {
+      try {
+        URL.revokeObjectURL(passportPreview)
+      } catch (e) {}
+    }
+    if (proofPreview && proofPreview.startsWith?.("blob:")) {
+      try {
+        URL.revokeObjectURL(proofPreview)
+      } catch (e) {}
+    }
+    setPassportPreview(null)
+    setProofPreview(null)
     onClose()
   }
 
@@ -408,11 +536,31 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                       onChange={(e) => e.target.files?.[0] && handleFileUpload("passportPhoto", e.target.files[0])}
                     />
                     <label htmlFor="passport" className="cursor-pointer">
-                      <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                      <p className="text-sm text-gray-600">
-                        {formData.passportPhoto ? "Photo uploaded" : "Click to upload or drag and drop"}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
+                      {passportPreview ? (
+                        <div>
+                          <img
+                            src={passportPreview}
+                            alt="Passport preview"
+                            className="mx-auto mb-2 w-28 h-28 object-cover rounded-full"
+                          />
+                          <p className="text-sm text-gray-600">Change photo</p>
+                          {passportUploadProgress !== null && (
+                            <div className="mt-3 w-full bg-gray-200 rounded h-2 overflow-hidden">
+                              <div
+                                className={`h-2 transition-all ${passportUploadError ? "bg-red-500" : "bg-emerald-600"}`}
+                                style={{ width: `${passportUploadProgress}%` }}
+                              />
+                            </div>
+                          )}
+                          {passportUploadError && <p className="text-xs text-red-600 mt-2">{passportUploadError}</p>}
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                          <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
+                          <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
+                        </>
+                      )}
                     </label>
                   </div>
                 </div>
@@ -473,13 +621,43 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                       onChange={(e) => e.target.files?.[0] && handleFileUpload("proofOfAddress", e.target.files[0])}
                     />
                     <label htmlFor="proofOfAddress" className="cursor-pointer">
-                      <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                      <p className="text-sm text-gray-600">
-                        {formData.proofOfAddress
-                          ? "Document uploaded"
-                          : "Click to upload utility bill or bank statement"}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">PDF, PNG, JPG up to 5MB</p>
+                      {proofPreview ? (
+                        proofPreviewType && proofPreviewType.startsWith("image") ? (
+                          <div>
+                            <img src={proofPreview} alt="Proof preview" className="mx-auto mb-2 w-36 h-24 object-contain rounded" />
+                            <p className="text-sm text-gray-600">Change document</p>
+                            {proofUploadProgress !== null && (
+                              <div className="mt-3 w-full bg-gray-200 rounded h-2 overflow-hidden">
+                                <div
+                                  className={`h-2 transition-all ${proofUploadError ? "bg-red-500" : "bg-emerald-600"}`}
+                                  style={{ width: `${proofUploadProgress}%` }}
+                                />
+                              </div>
+                            )}
+                            {proofUploadError && <p className="text-xs text-red-600 mt-2">{proofUploadError}</p>}
+                          </div>
+                        ) : (
+                          <div className="mx-auto mb-2 w-full flex flex-col items-center">
+                            <div className="px-3 py-2 bg-gray-100 rounded text-sm text-gray-700">Uploaded document</div>
+                            {proofFileName && <p className="text-xs text-gray-500 mt-2">{proofFileName}</p>}
+                            {proofUploadProgress !== null && (
+                              <div className="mt-3 w-full bg-gray-200 rounded h-2 overflow-hidden">
+                                <div
+                                  className={`h-2 transition-all ${proofUploadError ? "bg-red-500" : "bg-emerald-600"}`}
+                                  style={{ width: `${proofUploadProgress}%` }}
+                                />
+                              </div>
+                            )}
+                            {proofUploadError && <p className="text-xs text-red-600 mt-2">{proofUploadError}</p>}
+                          </div>
+                        )
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                          <p className="text-sm text-gray-600">Click to upload utility bill or bank statement</p>
+                          <p className="text-xs text-gray-500 mt-1">PDF, PNG, JPG up to 5MB</p>
+                        </>
+                      )}
                     </label>
                   </div>
                 </div>
@@ -518,6 +696,13 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                         value={formData.accountNumber}
                         onChange={(e) => handleInputChange("accountNumber", e.target.value.replace(/\D/g, ""))}
                       />
+                      {accountLookupLoading ? (
+                        <p className="text-xs text-gray-500 mt-1">Resolving account name...</p>
+                      ) : accountLookupError ? (
+                        <p className="text-xs text-red-600 mt-1">{accountLookupError}</p>
+                      ) : formData.accountName ? (
+                        <p className="text-xs text-gray-500 mt-1">Resolved name: {formData.accountName}</p>
+                      ) : null}
                     </div>
 
                     <div className="space-y-2">
@@ -526,11 +711,15 @@ export default function AddFarmerModal({ open, onClose, onSubmit }: AddFarmerMod
                       </Label>
                       <Input
                         id="accountName"
-                        placeholder="Enter account name"
+                        placeholder="Account name will be auto-filled"
                         value={formData.accountName}
-                        onChange={(e) => handleInputChange("accountName", e.target.value)}
+                        readOnly
                       />
-                      <p className="text-xs text-gray-500">Must match the name on your bank account</p>
+                      {formData.accountName ? (
+                        <p className="text-xs text-gray-500">Auto-filled from bank lookup (read-only)</p>
+                      ) : (
+                        <p className="text-xs text-gray-500">Must match the name on your bank account</p>
+                      )}
                     </div>
                   </div>
                 </div>
