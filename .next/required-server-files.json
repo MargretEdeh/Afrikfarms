@@ -98,7 +98,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/Users/mac/Documents/dev/afrikfarms",
+    "outputFileTracingRoot": "/Users/user/Desktop/Afrikfarms",
     "experimental": {
       "useSkewCookie": false,
       "cacheLife": {
@@ -287,10 +287,10 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.js",
     "turbopack": {
-      "root": "/Users/mac/Documents/dev/afrikfarms"
+      "root": "/Users/user/Desktop/Afrikfarms"
     }
   },
-  "appDir": "/Users/mac/Documents/dev/afrikfarms",
+  "appDir": "/Users/user/Desktop/Afrikfarms",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",
