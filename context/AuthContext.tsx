@@ -6,11 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 function setCookie(name: string, value: string, days: number = 7) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  // Use SameSite=Lax so cookie is sent on top-level GET navigations
-  // (e.g. payment provider callbacks) while still providing CSRF protections.
-  const sameSite = 'Lax';
-  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=${sameSite}${secure}`;
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict`;
 }
 
 function getCookie(name: string): string | null {
@@ -24,9 +20,7 @@ function getCookie(name: string): string | null {
 
 function deleteCookie(name: string) {
   // set expiry in the past and ensure path and SameSite are included
-  const sameSite = 'Lax';
-  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=${sameSite}${secure}`;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict`;
 }
 
 function clearAllCookies() {
@@ -36,9 +30,7 @@ function clearAllCookies() {
     const eqPos = cookie.indexOf('=');
     const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
     if (name) {
-      const sameSite = 'Lax';
-      const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=${sameSite}${secure}`;
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict`;
     }
   }
 }

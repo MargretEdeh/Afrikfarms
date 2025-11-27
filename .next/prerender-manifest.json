@@ -26,30 +26,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/login/admin": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/login/admin",
-      "dataRoute": "/login/admin.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/payment/verify": {
       "experimentalBypassFor": [
         {
@@ -65,6 +41,30 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/payment/verify",
       "dataRoute": "/payment/verify.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/login": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/login",
+      "dataRoute": "/login.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -98,6 +98,30 @@
         "x-next-revalidate-tag-token"
       ]
     },
+    "/admin/dashboard/farmers": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/admin/dashboard/farmers",
+      "dataRoute": "/admin/dashboard/farmers.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
     "/admin/dashboard/create-admin": {
       "experimentalBypassFor": [
         {
@@ -113,30 +137,6 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/admin/dashboard/create-admin",
       "dataRoute": "/admin/dashboard/create-admin.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/admin/dashboard/updates": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/admin/dashboard/updates",
-      "dataRoute": "/admin/dashboard/updates.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -166,30 +166,6 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/favicon.ico",
       "dataRoute": null,
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/admin/dashboard/revenue": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/admin/dashboard/revenue",
-      "dataRoute": "/admin/dashboard/revenue.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -247,7 +223,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/dashboard/admin": {
+    "/login/admin": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -260,8 +236,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/dashboard/admin",
-      "dataRoute": "/dashboard/admin.rsc",
+      "srcRoute": "/login/admin",
+      "dataRoute": "/login/admin.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -271,7 +247,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/dashboard/farms": {
+    "/admin/dashboard/updates": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -284,8 +260,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/dashboard/farms",
-      "dataRoute": "/dashboard/farms.rsc",
+      "srcRoute": "/admin/dashboard/updates",
+      "dataRoute": "/admin/dashboard/updates.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -319,30 +295,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/admin/dashboard/farmers": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/admin/dashboard/farmers",
-      "dataRoute": "/admin/dashboard/farmers.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/dashboard/updates": {
       "experimentalBypassFor": [
         {
@@ -367,7 +319,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/dashboard/verification": {
+    "/dashboard/farms": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -380,8 +332,56 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/dashboard/verification",
-      "dataRoute": "/dashboard/verification.rsc",
+      "srcRoute": "/dashboard/farms",
+      "dataRoute": "/dashboard/farms.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/admin/dashboard/revenue": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/admin/dashboard/revenue",
+      "dataRoute": "/admin/dashboard/revenue.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/admin/dashboard/farms": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/admin/dashboard/farms",
+      "dataRoute": "/admin/dashboard/farms.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -415,7 +415,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/login": {
+    "/dashboard/verification": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -428,8 +428,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/login",
-      "dataRoute": "/login.rsc",
+      "srcRoute": "/dashboard/verification",
+      "dataRoute": "/dashboard/verification.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -439,7 +439,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/admin/dashboard/farms": {
+    "/dashboard/admin": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -452,8 +452,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/admin/dashboard/farms",
-      "dataRoute": "/admin/dashboard/farms.rsc",
+      "srcRoute": "/dashboard/admin",
+      "dataRoute": "/dashboard/admin.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -467,8 +467,8 @@
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "033e31f6298f42ccb7c9e9ea202d0f36",
-    "previewModeSigningKey": "a1c50bba1caf9cd14e67d3748ea8fd17c784e7719e2e506adf453c3fa2b4c454",
-    "previewModeEncryptionKey": "f628f04ece32d58113c612ffd51024aa5cbfeda635d6466dc64c5cfdf786d2c3"
+    "previewModeId": "a44fb849b4e3893b66acfa2ebefb3cce",
+    "previewModeSigningKey": "043370d41546b249cf7bf69c272b60795d64f78a702c701c090c784842e611af",
+    "previewModeEncryptionKey": "2ffa958da1d67eaa3919a719d87d029c2679d56af746ef318fc39a9506b93f93"
   }
 }
