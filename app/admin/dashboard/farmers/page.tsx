@@ -10,9 +10,6 @@ import { AdminService } from "@/services/admin.service"
 import FarmerDetailsModal from "@/app/dashboard/_components/FarmerDetailsModal"
 import FarmerUpdateModal from "@/app/dashboard/_components/FarmerUpdateModal"
 
-interface FarmersSectionProps {
-  onAddFarmer?: (data: FarmerRegistrationData) => Promise<void>
-}
 
 // API Response type
 interface ApiFarmer {
@@ -52,7 +49,7 @@ interface FarmerUpdateData {
   status?: string
 }
 
-export default function AdminFarmersSection({ onAddFarmer }: FarmersSectionProps) {
+export default function AdminFarmersSection() {
   const [filter, setFilter] = useState("all")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [farmers, setFarmers] = useState<Farmer[]>([])
@@ -140,13 +137,9 @@ export default function AdminFarmersSection({ onAddFarmer }: FarmersSectionProps
 
   const handleAddFarmer = async (data: FarmerRegistrationData) => {
     try {
-      if (onAddFarmer) {
-        await onAddFarmer(data)
-      }
-      
+      // If registration is handled elsewhere, this will simply refresh the list
       toast.success("Farmer registered successfully")
       setIsModalOpen(false)
-      
       // Refresh the farmers list
       await fetchFarmers()
     } catch (error) {
