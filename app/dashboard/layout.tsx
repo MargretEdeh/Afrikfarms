@@ -9,7 +9,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = () => {
     if (confirm('Are you sure you want to logout?')) {
+      clearStorage()
+      clearCookies()
       window.location.href = '/'
+    }
+  }
+
+  // Clear all cookies for the current site (client-side)
+  const clearCookies = () => {
+    // iterate all cookies and expire them
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const eqPos = cookie.indexOf('=');
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+      if (name) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict`;
+      }
+    }
+  }
+
+  // Clear localStorage and sessionStorage (client-side)
+  const clearStorage = () => {
+    if (typeof window === 'undefined') return
+    try {
+      window.localStorage.clear()
+      window.sessionStorage.clear()
+    } catch (e) {
+      // ignore errors (e.g., in some privacy modes)
     }
   }
 
